@@ -1,9 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const catalogRoutes = require('./routers/catalog');
-const consumerRoutes = require('./routers/consumer');
-const adminRoutes = require('./routers/owner');
+const catalogRoutes = require('./routes/catalog');
+const consumerRoutes = require('./routes/consumer');
+const adminRoutes = require('./routes/admin');
 
 
 
