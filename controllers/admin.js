@@ -10,7 +10,7 @@ exports.addItem = (req,res,next)=>{
 
     res.status(201).json({
         message: "Item added successfully!",
-        Item: {id: new Date.toISOString(), title: title, content:content}
+        Item: {id: new Date().toISOString(), title: title, content:content}
     })
 
     }
