@@ -14,6 +14,6 @@ app.use(bodyParser.json());
 
 app.use(catalogRoutes);
 app.use(consumerRoutes);
-app.use(adminRoutes);
+app.use('/admin', adminRoutes);
 
 app.listen(3000);
