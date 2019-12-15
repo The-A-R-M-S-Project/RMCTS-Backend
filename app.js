@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const catalogRoutes = require('./routes/catalog');
 const consumerRoutes = require('./routes/consumer');
 const adminRoutes = require('./routes/admin');
+const connectMongo = require('./utils/database');
 
 
 
@@ -18,10 +19,13 @@ app.use((req, res, next)=>{
     next()
 })
 
-app.use(catalogRoutes);
-app.use(consumerRoutes);
 
 //------------------routes-------------------------------
+app.use(catalogRoutes);
+app.use(consumerRoutes);
 app.use('/admin', adminRoutes);
 
-app.listen(3000);
+connectMongo(client => {
+    console.log(client);
+    app.listen(3000);
+});
