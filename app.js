@@ -25,7 +25,6 @@ app.use(catalogRoutes);
 app.use(consumerRoutes);
 app.use('/admin', adminRoutes);
 
-connectMongo(client => {
-    console.log(client);
+connectMongo(() => {
     app.listen(3000);
 });
