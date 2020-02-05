@@ -1,9 +1,9 @@
 const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
 
-const _db;
+let _db;
 
-const connectMongo = callback =>{
+const connectMongo = callback => {
     MongoClient.connect(
         'mongodb+srv://ben-wycliff:9UwETeTDtrG5zg7K@rctms-qwi1m.mongodb.net/rmcts?retryWrites=true&w=majority'
         )
@@ -27,5 +27,5 @@ const getDB = () => {
     }
 }
 
-module.connectMongo = connectMongo
-module.getDB = getDB
+exports.connectMongo = connectMongo
+exports.getDB = getDB

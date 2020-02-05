@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const catalogRoutes = require('./routes/catalog');
 const consumerRoutes = require('./routes/consumer');
 const adminRoutes = require('./routes/admin');
-const connectMongo = require('./utils/database');
+const connectMongo = require('./utils/database').connectMongo;
 
 
 
