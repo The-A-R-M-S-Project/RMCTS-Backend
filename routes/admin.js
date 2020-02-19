@@ -2,10 +2,10 @@ const express = require('express');
 
 const router = express.Router();
 
-const adminControllers = require('../controllers/admin');
+const adminControllers = require('../controllers/Admin');
 
 //====================routes===========================
-router.get('/admin', (req, res)=>{
+router.get('/', (req, res)=>{
     res.json({message: 'Hello, admin!'});
 })
 router.post('/add-equipment', adminControllers.addItem)
