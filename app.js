@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const catalogRoutes = require('./routes/catalog');
-const consumerRoutes = require('./routes/consumer');
 const adminRoutes = require('./routes/admin');
 // const connectMongo = require('./utils/database').connectMongo;
 
@@ -23,7 +22,6 @@ app.use((req, res, next) => {
 
 //------------------routes-------------------------------
 app.use(catalogRoutes);
-app.use(consumerRoutes);
 app.use('/admin', adminRoutes);
 
 //------------------establishing connection------------------
@@ -32,9 +30,10 @@ app.use('/admin', adminRoutes);
 //     app.listen(3000);
 // });
 mongoose
-    .connect('mongodb+srv://ben-wycmongodb+srv://ben-wycliff:9UwETeTDtrG5zg7K@rctms-qwi1m.mongodb.net/rmcts?retryWrites=true&w=majorityliff:9UwETeTDtrG5zg7K@rctms-qwi1m.mongodb.net/rmcts?retryWrites=true&w=majority')
+    .connect('mongodb+srv://ben-wycliff:49Rb1m1qiikpIFP3@rctms-qwi1m.mongodb.net/test?retryWrites=true&w=majority')
     .then(result => {
         app.listen(3000);
+        console.log("your app is running on port 3000")
     }).catch(err => {
         console.log(err)
     })
