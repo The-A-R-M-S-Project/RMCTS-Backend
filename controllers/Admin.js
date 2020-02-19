@@ -1,3 +1,5 @@
+const Admin = require('../models/admin')
+
 exports.getItem = (req, res, next) => {
   res.json({
     Equipment: [
@@ -20,7 +22,7 @@ exports.addItem = (req, res, next) => {
   const title = req.body.title;
   const content = req.body.content;
 
-  res.status(201).json({ 
+  res.status(201).json({
     message: "Item added successfully!",
     Item: {
       _id: new Date().toISOString(),
@@ -31,4 +33,34 @@ exports.addItem = (req, res, next) => {
       owner: { name: "Wycliff" }
     }
   });
+};
+
+exports.createNewAdmin = async (req, res) => {
+  try {
+    const admin = new Admin(req.body);
+    await admin.save();
+    const token = await admin.generateAuthToken();
+    res.status(201).send({ admin, token });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
+exports.adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const admin = await Admin.findByCredentials(email, password);
+    if (!admin) {
+      return res
+        .status(401)
+        .send({ error: "Login failed! Check authentication credentials" });
+    }
+    console.log(admin)
+    const token = await admin.generateAuthToken();
+    res.send({ admin, token});
+  } 
+  catch (error) {
+    res.status(400).send(error);
+    // console.log(error)
+  }
 };

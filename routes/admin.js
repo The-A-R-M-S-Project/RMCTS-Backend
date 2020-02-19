@@ -5,6 +5,16 @@ const router = express.Router();
 const adminControllers = require('../controllers/Admin');
 
 //====================routes===========================
+// HTTP POST /admins ----> Registers admin.
+router.post('/', adminControllers.createNewAdmin)
+
+// HTTP POST /admins/login ----> Allow admins to login.
+router.post('/login', adminControllers.adminLogin)
+
+// HTTP GET / admins/me ----> Gets admin profile.
+// HTTP POST /admins/logout ---->Logs out the admin
+// HTTP post /admins/logoutall ----> Logs out admin from all devices.
+
 router.get('/', (req, res)=>{
     res.json({message: 'Hello, admin!'});
 })
