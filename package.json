@@ -18,10 +18,13 @@
   },
   "homepage": "https://github.com/The-A-R-M-S-Project/RMCTS-Backend#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.4.0",
-    "mongoose": "^5.8.11"
+    "mongoose": "^5.8.11",
+    "validator": "^12.2.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.4"
