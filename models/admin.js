@@ -56,7 +56,7 @@ adminSchema.methods.generateAuthToken = async function() {
 
 // Searching for the admin by email and password.
 adminSchema.statics.findByCredentials = async (email, password) => {
-  const admin = await admin.findOne({ email });
+  const admin = await Admin.findOne({ email });
   if (!admin) {
     throw new Error({ error: "Invalid login credentials" });
   }
@@ -67,6 +67,6 @@ adminSchema.statics.findByCredentials = async (email, password) => {
   return admin;
 };
 
-const admin = mongoose.model("admin", adminSchema);
+const Admin = mongoose.model("admin", adminSchema);
 
-module.exports = admin;
+module.exports = Admin;
