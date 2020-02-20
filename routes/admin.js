@@ -1,8 +1,8 @@
 const express = require('express');
-
 const router = express.Router();
-
 const adminControllers = require('../controllers/Admin');
+
+const auth = require('../middleware/auth');
 
 //====================routes===========================
 // HTTP POST /admins ----> Registers admin.
@@ -12,6 +12,9 @@ router.post('/', adminControllers.createNewAdmin)
 router.post('/login', adminControllers.adminLogin)
 
 // HTTP GET / admins/me ----> Gets admin profile.
+router.get('/me', auth, async(req, res)=>{
+    res.send(req.admin);
+})
 // HTTP POST /admins/logout ---->Logs out the admin
 // HTTP post /admins/logoutall ----> Logs out admin from all devices.
 
