@@ -31,7 +31,8 @@ mongoose
     "mongodb+srv://ben-wycliff:49Rb1m1qiikpIFP3@rctms-qwi1m.mongodb.net/test?retryWrites=true&w=majority",
     {
       useNewUrlParser: true,
-      useCreateIndex: true
+      useCreateIndex: true,
+      useUnifiedTopology: true
     }
   )
   .then(result => {

@@ -55,7 +55,6 @@ exports.adminLogin = async (req, res) => {
         .status(401)
         .send({ error: "Login failed! Check authentication credentials" });
     }
-    console.log(admin)
     const token = await admin.generateAuthToken();
     res.send({ admin, token});
   } 
