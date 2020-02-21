@@ -18,23 +18,6 @@ exports.getItem = (req, res, next) => {
   });
 };
 
-exports.addItem = (req, res, next) => {
-  const title = req.body.title;
-  const content = req.body.content;
-
-  res.status(201).json({
-    message: "Item added successfully!",
-    Item: {
-      _id: new Date().toISOString(),
-      title: title,
-      description: description,
-      location: location,
-      imageURL: imageURL,
-      owner: { name: "Wycliff" }
-    }
-  });
-};
-
 exports.createNewAdmin = async (req, res) => {
   try {
     const admin = new Admin(req.body);
