@@ -25,6 +25,13 @@ const adminSchema = mongoose.Schema({
     required: true,
     minLength: 7
   },
+  contact: {
+    type: String,
+    required: true
+  },
+  websiteUrl: {
+    type: String,
+  },
   tokens: [
     {
       token: {
