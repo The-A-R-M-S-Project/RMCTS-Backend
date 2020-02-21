@@ -2,8 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-const catalogRoutes = require("./routes/catalog");
-const adminRoutes = require("./routes/admin");
+const catalogRoutes = require("./routes/equipment");
+const adminRoutes = require("./routes/admins");
 // const connectMongo = require('./utils/database').connectMongo;
 
 const app = express();
