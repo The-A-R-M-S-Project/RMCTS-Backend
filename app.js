@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-const catalogRoutes = require("./routes/equipment");
+const equipmentRoutes = require("./routes/equipment");
 const adminRoutes = require("./routes/admins");
 // const connectMongo = require('./utils/database').connectMongo;
 
@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 //------------------routes-------------------------------
-app.use(catalogRoutes);
+app.use(equipmentRoutes);
 app.use("/admins", adminRoutes);
 
 //------------------establishing connection------------------

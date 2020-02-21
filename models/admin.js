@@ -27,7 +27,7 @@ const adminSchema = mongoose.Schema({
   },
   contact: {
     type: String,
-    required: true
+    // required: true
   },
   websiteUrl: {
     type: String,
@@ -74,6 +74,6 @@ adminSchema.statics.findByCredentials = async (email, password) => {
   return admin;
 };
 
-const Admin = mongoose.model("admin", adminSchema);
+const Admin = mongoose.model("Admin", adminSchema);
 
 module.exports = Admin;

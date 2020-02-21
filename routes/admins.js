@@ -29,7 +29,7 @@ router.post('/me/logout', auth, async(req, res) => {
 router.post('/me/logout-all', auth, async(req, res)=> {
     try{
         req.admin.tokens.splice(0, req.admin.tokens.length)
-        await req.user.save()
+        await req.admin.save()
         res.send()
     }catch(error){
         res.status(500).send(error)
@@ -38,7 +38,7 @@ router.post('/me/logout-all', auth, async(req, res)=> {
 router.get('/', (req, res)=>{
     res.json({message: 'Hello, admin!'});
 })
-router.post('/add-equipment', adminControllers.addItem)
-router.get('/equipment', adminControllers.getItem)
+// router.post('/add-equipment', adminControllers.addItem)
+// router.get('/equipment', adminControllers.getItem)
 
 module.exports = router;
