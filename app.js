@@ -28,7 +28,7 @@ app.use("/admins", adminRoutes);
 // });
 mongoose
   .connect(
-    "mongodb+srv://ben-wycliff:49Rb1m1qiikpIFP3@rctms-qwi1m.mongodb.net/test?retryWrites=true&w=majority",
+    "mongodb+srv://wycliff:hBgOZXRI6a73R9lG@rmcts-qwjac.mongodb.net/test?retryWrites=true&w=majority",
     {
       useNewUrlParser: true,
       useCreateIndex: true,
@@ -37,7 +37,7 @@ mongoose
   )
   .then(result => {
     app.listen(3000);
-    console.log("your app is running on port 3000");
+    console.log("App is running on port 3000");
   })
   .catch(err => {
     console.log(err);
