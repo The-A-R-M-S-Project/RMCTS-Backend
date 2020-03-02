@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const equipmentRoutes = require("./routes/equipment");
 const adminRoutes = require("./routes/admins");
 // const connectMongo = require('./utils/database').connectMongo;
+const port = process.env.PORT || 3000;
 
 const app = express();
 
@@ -36,7 +37,7 @@ mongoose
     }
   )
   .then(result => {
-    app.listen(3000);
+    app.listen(port);
     console.log("App is running on port 3000");
   })
   .catch(err => {
