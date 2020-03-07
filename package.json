@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
-    "start:dev": "env-cmd -f ./.env nodemon app.js"
+    "start": "env-cmd -f ./.env nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -30,5 +29,8 @@
   "devDependencies": {
     "env-cmd": "^10.1.0",
     "nodemon": "^1.19.4"
+  },
+  "engines": {
+    "node": "12.x"
   }
 }
