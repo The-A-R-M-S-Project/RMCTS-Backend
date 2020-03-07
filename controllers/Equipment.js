@@ -12,3 +12,12 @@ exports.addItem = async (req, res) => {
         res.status(400).send(error)
     }
   };
+exports.getUserEquipment = async (req, res) => {
+    try {
+        const equipment = await Item.find({userId: req.admin._id})
+        res.json(equipment)
+    }
+    catch(error) {
+        res.status(400).send(error)
+    }
+}

@@ -4,9 +4,7 @@ const router = express.Router();
 const auth = require('../controllers/auth');
 
 router.post('/add-item', auth, equipmentControllers.addItem)
-router.get('/', (req, res) => {
-    res.json({message: "RMCTS api home"})
-})
+router.get('/equipment', auth, equipmentControllers.getUserEquipment)
 
 // router.get('/catalog', (req, res)=>{
 //     res.json({message: 'Here goes the catalog!'});
