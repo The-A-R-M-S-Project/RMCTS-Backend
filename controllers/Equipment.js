@@ -24,7 +24,9 @@ exports.updateItem = async (req, res) => {
     const id = req.body._id;
     const item = await Item.findById(id);
     if (!item) {
-      res.status(responseDueToNotFound().status).json(response.message);
+      res
+        .status(responseDueToNotFound().status)
+        .json(responseDueToNotFound().message);
     } else {
       item.title = req.body.title;
       item.location = req.body.location;
@@ -36,6 +38,20 @@ exports.updateItem = async (req, res) => {
     }
   } catch (error) {
     res.status(404).json(error);
-    console.log("3");
+  }
+};
+exports.deleteItem = async (req, res) => {
+  try {
+    const id = req.params.id;
+    let response = await Item.findByIdAndDelete(id);
+    if (!response) {
+      res
+        .status(responseDueToNotFound().status)
+        .json(responseDueToNotFound().message);
+    } else {
+      res.status(200).json(response);
+    }
+  } catch (error) {
+    res.status(404).json(error);
   }
 };
