@@ -30,7 +30,7 @@ app.use("/admins", adminRoutes);
 // });
 mongoose
   .connect(
-    "mongodb+srv://wycliff:hBgOZXRI6a73R9lG@rmcts-qwjac.mongodb.net/test?retryWrites=true&w=majority",
+    process.env.DATABASE_URL,
     {
       useNewUrlParser: true,
       useCreateIndex: true,
