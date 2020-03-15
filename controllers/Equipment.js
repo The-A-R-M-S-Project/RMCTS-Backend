@@ -55,3 +55,14 @@ exports.deleteItem = async (req, res) => {
     res.status(404).json(error);
   }
 };
+
+exports.getQueryMatch = async (req, res) => {
+  Item.search(req.body.search, function(err, data) {
+    // console.log(data);
+    if(err){
+      res.send(err)
+    }else{
+      res.status(200).send(data)
+    }
+  })  
+};

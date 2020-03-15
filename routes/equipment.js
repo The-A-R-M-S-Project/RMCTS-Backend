@@ -8,6 +8,8 @@ router.get('/equipment', auth, equipmentControllers.getUserEquipment)
 router.delete('/delete-item/:id', auth, equipmentControllers.deleteItem)
 router.put('/edit-item', auth, equipmentControllers.updateItem )
 
+router.get('/search', auth, equipmentControllers.getQueryMatch)
+
 // router.get('/catalog', (req, res)=>{
 //     res.json({message: 'Here goes the catalog!'});
 // })
