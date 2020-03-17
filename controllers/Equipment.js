@@ -13,7 +13,7 @@ exports.addItem = async (req, res) => {
 };
 exports.getItem = async (req, res) => {
   try {
-    const item = await Item.findOne({ _id: req.body._id });
+    const item = await Item.findOne({ _id: req.params.id });
     const owner = await Admin.findOne({ _id: item.userId });
     res
       .status(200)
@@ -78,6 +78,7 @@ exports.deleteItem = async (req, res) => {
 exports.getQueryMatch = async (req, res) => {
   Item.search(req.body.search, function(err, data) {
     // console.log(data);
+    // console.log(req.body.search)
     if (err) {
       res.send(err);
     } else {
