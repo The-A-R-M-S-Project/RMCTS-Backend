@@ -1,9 +1,16 @@
 const Admin = require("../models/admin");
 const Item = require("../models/item");
+const multer = require('../middlewares/multer')
+const cloudinary = require('../config/cloudinaryConfig')
 
 exports.addItem = async (req, res) => {
   try {
-    const item = new Item(req.body);
+    itm = req.body
+    const file = multer.dataURI(req).content;
+    const result = await cloudinary.uploader.upload(file)
+    itm.imageURL = result.secure_url
+    itm.imageID = result.public_id
+    const item = new Item(itm);
     item.userId = await req.admin._id;
     await item.save();
     res.status(201).send(item);
@@ -45,11 +52,14 @@ exports.updateItem = async (req, res) => {
     if (!item) {
       res
         .status(responseDueToNotFound().status)
-        .json(responseDueToNotFound().message);
+        .json(responseDueToNotFound().message); 
     } else {
+      const file = multer.dataURI(req).content;
+      const result = await cloudinary.uploader.upload(file)
+      item.imageURL = result.secure_url
+      item.imageID = result.public_id
       item.title = req.body.title;
       item.location = req.body.location;
-      item.imageURL = req.body.imageURL;
       item.description = req.body.description;
       item.userId = await req.admin._id;
       await item.save();
@@ -76,7 +86,7 @@ exports.deleteItem = async (req, res) => {
 };
 
 exports.getQueryMatch = async (req, res) => {
-  Item.search(req.body.search, function(err, data) {
+  Item.search(req.body.search, function (err, data) {
     // console.log(data);
     // console.log(req.body.search)
     if (err) {
@@ -91,7 +101,7 @@ exports.getCatalogDefault = async (req, res) => {
   Item.find()
     .sort({ createdAt: -1 })
     .limit(6)
-    .exec(function(error, data) {
+    .exec(function (error, data) {
       if (error) {
         res.status(400).send(error);
       } else {
