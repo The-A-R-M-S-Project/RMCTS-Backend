@@ -1,7 +1,7 @@
 const express = require('express');
 const equipmentControllers = require('../controllers/Equipment')
 const router = express.Router();
-const auth = require('../controllers/auth');
+const auth = require('../middlewares/auth');
 
 router.post('/add-item', auth, equipmentControllers.addItem)
 router.get('/equipment', auth, equipmentControllers.getUserEquipment)
