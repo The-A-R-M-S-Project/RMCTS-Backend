@@ -1,4 +1,5 @@
 const cloudinary = require('cloudinary')
+require('dotenv').config();
 
 const config = cloudinary.config
 const uploader = cloudinary.uploader
