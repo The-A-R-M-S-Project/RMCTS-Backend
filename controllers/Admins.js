@@ -1,32 +1,30 @@
 const Admin = require('../models/admin')
+const multer = require('../middlewares/multer')
+const cloudinary = require('../config/cloudinaryConfig')
 
-exports.getItem = (req, res, next) => {
-  res.json({
-    Equipment: [
-      {
-        _id: "01",
-        title: "equipment1",
-        description: "This is an electronics workbench",
-        location: "Makindye",
-        imageURL:
-          "https://images.unsplash.com/photo-1454976635780-7d49710daa1a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-        owner: {
-          name: "Wycliff"
-        }
-      }
-    ]
-  });
-};
 
-exports.createNewAdmin = async (req, res) => {
-  try {
-    const admin = new Admin(req.body);
-    await admin.save();
-    // const token = await admin.generateAuthToken();
-    res.status(201).send({ admin });
-  } catch (error) {
-    res.status(400).send(error);
-  }
+exports.createNewAdmin = (req, res) => {
+
+  const adm = req.body
+  const file = multer.dataURI(req).content;
+
+  cloudinary.uploader.upload(file).then((result) => {
+    adm.profileImage = result.secure_url;
+    adm.profileImageID = result.public_id
+
+    const admin = new Admin(adm);
+    admin.save();
+
+    return res.status(200).json({
+      message: 'Your account has been created successfully',
+      admin: admin
+    })
+  }).catch((err) => res.status(400).json({
+    message: 'someting went wrong while processing your request',
+    data: {
+      err
+    }
+  }))
 };
 
 exports.adminLogin = async (req, res) => {
@@ -39,8 +37,8 @@ exports.adminLogin = async (req, res) => {
         .send({ error: "Login failed! Check authentication credentials" });
     }
     const token = await admin.generateAuthToken();
-    res.send({ admin, token});
-  } 
+    res.send({ admin, token });
+  }
   catch (error) {
     res.status(400).send(error);
     // console.log(error)
