@@ -35,11 +35,11 @@ const adminSchema = mongoose.Schema({
   },
   profileImage: {
     type: String,
-    required: true
+//     required: true
   },
   profileImageID: {
     type: String,
-    required: true
+//     required: true
   },
   address: {
     type: String
