@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+// const multer = require("./middlewares/multer");
+const cloudinary = require("./config/cloudinaryConfig");
 require('dotenv').config();
 
 const equipmentRoutes = require("./routes/equipment");
@@ -10,6 +12,7 @@ const port = process.env.PORT || 3000;
 
 const app = express();
 
+app.use('*', cloudinary.cloudinaryConfig);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use((req, res, next) => {

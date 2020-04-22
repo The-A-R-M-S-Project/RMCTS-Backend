@@ -28,10 +28,21 @@ const adminSchema = mongoose.Schema({
   },
   contact: {
     type: String,
-    // required: true
+    required: true
   },
   websiteUrl: {
     type: String,
+  },
+  profileImage: {
+    type: String,
+    required: true
+  },
+  profileImageID: {
+    type: String,
+    required: true
+  },
+  address: {
+    type: String
   },
   tokens: [
     {
