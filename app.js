@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cloudinary = require("./config/cloudinaryConfig");
+const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
@@ -13,6 +14,16 @@ const adminRoutes = require("./routes/admins");
 const port = process.env.PORT || 3000;
 
 const app = express();
+
+// limits requests from one user
+const limit = rateLimit({
+  max: 200,
+  windowMs: 60 * 60 *1000,
+  message: "Too many requests made in the previous hour"
+})
+
+//--------------limits all routes -----------------------
+app.use('/', limit)
 
 // Data sanitization agains XSS
 app.use(helmet());
@@ -30,6 +41,8 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
+
+
 
 //------------------routes-------------------------------
 app.use(equipmentRoutes);
