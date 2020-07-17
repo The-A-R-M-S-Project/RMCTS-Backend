@@ -1,8 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-// const multer = require("./middlewares/multer");
 const cloudinary = require("./config/cloudinaryConfig");
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
 require('dotenv').config();
 
 const equipmentRoutes = require("./routes/equipment");
@@ -11,6 +13,13 @@ const adminRoutes = require("./routes/admins");
 const port = process.env.PORT || 3000;
 
 const app = express();
+
+// Data sanitization agains XSS
+app.use(helmet());
+app.use (xss())
+
+// Data sanitization against NoSQL injection attacks
+app.use(mongoSanitize());
 
 app.use('*', cloudinary.cloudinaryConfig);
 app.use(bodyParser.urlencoded({ extended: true }));
