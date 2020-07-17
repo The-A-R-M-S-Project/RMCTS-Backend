@@ -6,15 +6,19 @@ const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
-require('dotenv').config();
+const morgan = require("morgan");
+
 
 const equipmentRoutes = require("./routes/equipment");
 const adminRoutes = require("./routes/admins");
 // const connectMongo = require('./utils/database').connectMongo;
+require('dotenv').config();
+
 const port = process.env.PORT || 3000;
 
 const app = express();
 
+//--------------- protection from attacks ----------------
 // limits requests from one user
 const limit = rateLimit({
   max: 200,
@@ -22,7 +26,7 @@ const limit = rateLimit({
   message: "Too many requests made in the previous hour"
 })
 
-//--------------limits all routes -----------------------
+//limits all routes
 app.use('/', limit)
 
 // Data sanitization agains XSS
@@ -32,9 +36,14 @@ app.use (xss())
 // Data sanitization against NoSQL injection attacks
 app.use(mongoSanitize());
 
+//-------------------------------------------------------
 app.use('*', cloudinary.cloudinaryConfig);
+
+// -------------- parse data ----------------------------
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// ---------------- ENABLE CORS -------------------------
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE");
@@ -42,17 +51,14 @@ app.use((req, res, next) => {
   next();
 });
 
-
+//--------------------- logs ----------------------------
+app.use(morgan('tiny'));
 
 //------------------routes-------------------------------
 app.use(equipmentRoutes);
 app.use("/admins", adminRoutes);
 
-//------------------establishing connection------------------
-
-// connectMongo(() => {
-//     app.listen(3000);
-// });
+//------------------establishing connection--------------
 mongoose
   .connect(
     process.env.DATABASE_URL,
