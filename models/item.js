@@ -26,7 +26,24 @@ const itemSchema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: "Admin"
-    }
+    },
+    reservations: [
+      {
+        from: {
+          type: String,
+          unique: true
+        },
+        to: {
+          type: String,
+          unique: true
+        },
+        reserverId: {
+          type: Schema.Types.ObjectId,
+          ref: "Admin"
+        },
+        title: String
+      }
+    ]
   },
   { timestamps: true }
 );
