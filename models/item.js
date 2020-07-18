@@ -29,11 +29,11 @@ const itemSchema = new Schema(
     },
     reservations: [
       {
-        from: {
+        start: {
           type: String,
           unique: true
         },
-        to: {
+        end: {
           type: String,
           unique: true
         },
