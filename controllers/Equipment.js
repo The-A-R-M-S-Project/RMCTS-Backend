@@ -1,15 +1,15 @@
 const Admin = require("../models/admin");
 const Item = require("../models/item");
-const multer = require('../middlewares/multer')
-const cloudinary = require('../config/cloudinaryConfig')
+const multer = require("../middlewares/multer");
+const cloudinary = require("../config/cloudinaryConfig");
 
 exports.addItem = async (req, res) => {
   try {
-    itm = req.body
+    itm = req.body;
     const file = multer.dataURI(req).content;
-    const result = await cloudinary.uploader.upload(file)
-    itm.imageURL = result.secure_url
-    itm.imageID = result.public_id
+    const result = await cloudinary.uploader.upload(file);
+    itm.imageURL = result.secure_url;
+    itm.imageID = result.public_id;
     const item = new Item(itm);
     item.userId = await req.admin._id;
     await item.save();
@@ -22,16 +22,14 @@ exports.getItem = async (req, res) => {
   try {
     const item = await Item.findOne({ _id: req.params.id });
     const owner = await Admin.findOne({ _id: item.userId });
-    res
-      .status(200)
-      .send([
-        item,
-        {
-          ownerName: owner.name,
-          ownerEmail: owner.email,
-          ownerContact: owner.contact
-        }
-      ]);
+    res.status(200).send([
+      item,
+      {
+        ownerName: owner.name,
+        ownerEmail: owner.email,
+        ownerContact: owner.contact,
+      },
+    ]);
     // res.status(200).send(item)
   } catch (error) {
     res.status(400).send(error);
@@ -52,12 +50,12 @@ exports.updateItem = async (req, res) => {
     if (!item) {
       res
         .status(responseDueToNotFound().status)
-        .json(responseDueToNotFound().message); 
+        .json(responseDueToNotFound().message);
     } else {
       const file = multer.dataURI(req).content;
-      const result = await cloudinary.uploader.upload(file)
-      item.imageURL = result.secure_url
-      item.imageID = result.public_id
+      const result = await cloudinary.uploader.upload(file);
+      item.imageURL = result.secure_url;
+      item.imageID = result.public_id;
       item.title = req.body.title;
       item.location = req.body.location;
       item.description = req.body.description;
@@ -98,14 +96,36 @@ exports.getQueryMatch = async (req, res) => {
 };
 
 exports.getCatalogDefault = async (req, res) => {
-  Item.find()
-    .sort({ createdAt: -1 })
-    .limit(6)
-    .exec(function (error, data) {
-      if (error) {
-        res.status(400).send(error);
-      } else {
-        res.status(200).send(data);
-      }
-    });
+  try {
+    Item.find()
+      .sort({ createdAt: -1 })
+      .limit(6)
+      .exec(function (error, data) {
+        if (error) {
+          res.status(400).send(error);
+        } else {
+          res.status(200).send(data);
+        }
+      });
+  } catch (error) {
+    res.send(error);
+  }
 };
+
+exports.makeReservation = async(req, res) =>  {
+  try{
+    const id = req.params.id;
+    const reservation = req.body
+
+    reservation.reserverID = await req.admin._id
+    const item = await Item.findById(id)
+    console.log(item)
+    await item.reservations.push(reservation)
+    await item.save()
+    res.status(200).send(item)
+    console.log(item)
+  }
+  catch(error) {
+    res.send(error)
+  }
+}

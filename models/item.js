@@ -13,11 +13,11 @@ const itemSchema = new Schema(
     },
     imageURL: {
       type: String,
-      required: true
+      // required: true
     },
     imageID:{
       type: String,
-      required: true
+      // required: true
     },
     description: {
       type: String,
@@ -29,11 +29,11 @@ const itemSchema = new Schema(
     },
     reservations: [
       {
-        from: {
+        start: {
           type: String,
           unique: true
         },
-        to: {
+        end: {
           type: String,
           unique: true
         },

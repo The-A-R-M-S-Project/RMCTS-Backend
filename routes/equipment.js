@@ -11,6 +11,7 @@ router.put('/edit-item', auth, multer.multerUploads, equipmentControllers.update
 router.get('/catalog-default', equipmentControllers.getCatalogDefault)
 router.post('/search', auth, equipmentControllers.getQueryMatch)
 router.get('/item/:id', equipmentControllers.getItem)
+router.post('/reservation/:id', auth, equipmentControllers.makeReservation)
 
 // router.get('/catalog', (req, res)=>{
 //     res.json({message: 'Here goes the catalog!'});
