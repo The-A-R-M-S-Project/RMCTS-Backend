@@ -24,7 +24,7 @@ router.get("/item/:id", equipmentControllers.getItem);
 router.post("/reservation/:id", auth, equipmentControllers.makeReservation);
 router.delete("/reservations", auth, equipmentControllers.deleteReservation);
 router.get("/reservations", auth, equipmentControllers.getReservations);
-
+router.get("/bookings", auth, equipmentControllers.getBookings);
 // router.get('/catalog', (req, res)=>{
 //     res.json({message: 'Here goes the catalog!'});
 // })

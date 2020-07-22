@@ -168,6 +168,19 @@ exports.getReservations = async (req, res) => {
   }
 };
 
+exports.getBookings = async (req, res) => {
+  try {
+    const items = await Item.find({ userId: req.admin._id });
+    reservations = [];
+    for (i of items) {
+      reservations.push(...i.reservations);
+    }
+    res.status(200).send(reservations);
+  } catch (error) {
+    res.status(404).send(error);
+  }
+};
+
 exports.deleteReservation = async (req, res) => {
   try {
     console.log(req.body);
