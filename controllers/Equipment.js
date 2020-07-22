@@ -117,7 +117,7 @@ exports.makeReservation = async (req, res) => {
     const id = req.params.id;
     const reservation = req.body;
 
-    reservation.reserverID = await req.admin._id.toString();
+    reservation.reserverId = await req.admin._id.toString();
     const item = await Item.findById(id);
 
     // checking if dates are already occupied
@@ -132,8 +132,7 @@ exports.makeReservation = async (req, res) => {
       selectedStart = new Date(req.body.start);
       selectedEnd = new Date(req.body.end);
       console.log("dates ", selectedEnd, selectedStart);
-      for(i of reservationsArray) {
-
+      for (i of reservationsArray) {
         // existing dates
         iStart = new Date(i.start);
         iEnd = new Date(i.end);
@@ -151,6 +150,21 @@ exports.makeReservation = async (req, res) => {
     }
   } catch (error) {
     res.send(error);
+  }
+};
+
+exports.getReservations = async (req, res) => {
+  try {
+    const items = await Item.find({ "reservations.reserverId": req.admin._id });
+    // console.log(items)
+    reservations = [];
+    for (i of items) {
+      reservations.push(...i.reservations);
+    }
+
+    res.status(200).send(reservations);
+  } catch (error) {
+    res.status(404).send(error);
   }
 };
 
