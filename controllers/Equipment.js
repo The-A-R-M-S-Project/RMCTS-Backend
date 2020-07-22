@@ -112,20 +112,71 @@ exports.getCatalogDefault = async (req, res) => {
   }
 };
 
-exports.makeReservation = async(req, res) =>  {
-  try{
+exports.makeReservation = async (req, res) => {
+  try {
     const id = req.params.id;
-    const reservation = req.body
+    const reservation = req.body;
 
-    reservation.reserverID = await req.admin._id
-    const item = await Item.findById(id)
-    console.log(item)
-    await item.reservations.push(reservation)
-    await item.save()
-    res.status(200).send(item)
-    console.log(item)
+    reservation.reserverID = await req.admin._id.toString();
+    const item = await Item.findById(id);
+
+    // checking if dates are already occupied
+    reservationsArray = item.reservations;
+    if (
+      reservationsArray.filter((v) => v.start == req.body.start).length > 0 ||
+      reservationsArray.filter((v) => v.end == req.body.end).length > 0
+    ) {
+      res.status(400).send("date already taken");
+    } else {
+      // ensuring date is not within an already occupied period
+      selectedStart = new Date(req.body.start);
+      selectedEnd = new Date(req.body.end);
+      console.log("dates ", selectedEnd, selectedStart);
+      for(i of reservationsArray) {
+
+        // existing dates
+        iStart = new Date(i.start);
+        iEnd = new Date(i.end);
+        if (
+          (iStart <= selectedStart && selectedStart <= iEnd) ||
+          (iStart <= selectedEnd && selectedEnd <= iEnd)
+        ) {
+          res.status(400).send("time slot already occupied");
+        }
+      }
+      // Adding reservation
+      await item.reservations.push(reservation);
+      await item.save();
+      res.status(200).send(item);
+    }
+  } catch (error) {
+    res.send(error);
   }
-  catch(error) {
-    res.send(error)
+};
+
+exports.deleteReservation = async (req, res) => {
+  try {
+    console.log(req.body);
+    item_id = req.body.itemID;
+    console.log(item_id);
+    reservation_id = req.body.reservationID;
+    const item = await Item.findById(item_id);
+    // console.log(item);
+    item.reservations.splice(0, item.reservations.length);
+    await item.save();
+    console.log(item);
+    // await item.reservations.id(reservation_id).remove();
+    // await item.save()
+    // console.log(items.reservations)
+    // if (!response) {
+    //   res
+    //     .status(responseDueToNotFound().status)
+    //     .json(responseDueToNotFound().message);
+    // } else {
+    //   res.status(200).json(response);
+    // }
+    res.status(200).send(item);
+  } catch (error) {
+    res.send(error);
   }
-}
+};
