@@ -116,6 +116,7 @@ exports.makeReservation = async (req, res) => {
   try {
     const id = req.params.id;
     const reservation = req.body;
+    reservation.itemId = id;
 
     reservation.reserverId = await req.admin._id.toString();
     const item = await Item.findById(id);
@@ -173,6 +174,7 @@ exports.getBookings = async (req, res) => {
     const items = await Item.find({ userId: req.admin._id });
     reservations = [];
     for (i of items) {
+      
       reservations.push(...i.reservations);
     }
     res.status(200).send(reservations);

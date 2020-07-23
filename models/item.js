@@ -41,7 +41,12 @@ const itemSchema = new Schema(
           type: Schema.Types.ObjectId,
           ref: "Admin"
         },
-        title: String
+        title: String,
+        description: String,
+        itemId: {
+          type: Schema.Types.ObjectId,
+          ref: "Item"
+        }
       }
     ]
   },
