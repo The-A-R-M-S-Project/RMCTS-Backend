@@ -37,10 +37,17 @@ exports.adminLogin = async (req, res) => {
         .status(401)
         .send({ error: "Login failed! Check authentication credentials" });
     }
+    if (!admin.isVerified)
+      return res
+        .status(401)
+        .send({
+          type: "not-verified",
+          msg: "This account has not been verified",
+        });
     const token = await admin.generateAuthToken();
     res.send({ admin, token });
   } catch (error) {
-    res.status(400).send(error);
+    return res.status(400).send(error);
     // console.log(error)
   }
 };
@@ -52,7 +59,7 @@ exports.logout = async (req, res) => {
     });
     await req.admin.save();
     res.send();
-  } catch (err) {
+  } catch (error) {
     res.status(500).send(error);
   }
 };
