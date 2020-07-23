@@ -209,3 +209,19 @@ exports.deleteReservation = async (req, res) => {
     res.send(error);
   }
 };
+
+exports.makeReservation = async(req, res) =>  {
+  try{
+    const id = req.params.id;
+    const reservation = req.body
+
+    reservation.reserverID = await req.admin._id
+    const item = await Item.findById(id)
+    item.reservations.append(reservation)
+    await item.save()
+    res.status(200).send(item)
+  }
+  catch(error) {
+    res.send(error)
+  }
+}
