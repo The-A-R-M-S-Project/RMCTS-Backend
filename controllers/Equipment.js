@@ -146,8 +146,10 @@ exports.makeReservation = async (req, res) => {
       }
       // Adding reservation
       await item.reservations.push(reservation);
-      await item.save();
-      res.status(200).send(item);
+      await item.save((err)=> {
+        if(err) return res.status(400).send(err);
+        res.status(200).send(item);
+      });
     }
   } catch (error) {
     res.send(error);
@@ -174,7 +176,6 @@ exports.getBookings = async (req, res) => {
     const items = await Item.find({ userId: req.admin._id });
     reservations = [];
     for (i of items) {
-      
       reservations.push(...i.reservations);
     }
     res.status(200).send(reservations);
@@ -185,43 +186,24 @@ exports.getBookings = async (req, res) => {
 
 exports.deleteReservation = async (req, res) => {
   try {
-    console.log(req.body);
-    item_id = req.body.itemID;
-    console.log(item_id);
+    item_id = req.body.itemId;
     reservation_id = req.body.reservationID;
+
+    // find item
     const item = await Item.findById(item_id);
-    // console.log(item);
-    item.reservations.splice(0, item.reservations.length);
-    await item.save();
+
+    // delete reservation
+    item.reservations = item.reservaions.filter(
+      (item) => item._id != reservation_id
+    );
+    await item.save(function (err) {
+      if (err) return res.status(400).send(err);
+      res.status(200).send(item);
+    });
     console.log(item);
-    // await item.reservations.id(reservation_id).remove();
-    // await item.save()
-    // console.log(items.reservations)
-    // if (!response) {
-    //   res
-    //     .status(responseDueToNotFound().status)
-    //     .json(responseDueToNotFound().message);
-    // } else {
-    //   res.status(200).json(response);
-    // }
-    res.status(200).send(item);
   } catch (error) {
     res.send(error);
   }
 };
 
-exports.makeReservation = async(req, res) =>  {
-  try{
-    const id = req.params.id;
-    const reservation = req.body
 
-    reservation.reserverID = await req.admin._id
-    const item = await Item.findById(id)
-    item.reservations.append(reservation)
-    await item.save()
-    res.status(200).send(item)
-  }
-  catch(error) {
-    res.send(error)
-  }
-}

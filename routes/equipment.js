@@ -22,7 +22,7 @@ router.get("/catalog-default", equipmentControllers.getCatalogDefault);
 router.post("/search", auth, equipmentControllers.getQueryMatch);
 router.get("/item/:id", equipmentControllers.getItem);
 router.post("/reservation/:id", auth, equipmentControllers.makeReservation);
-router.delete("/reservations", auth, equipmentControllers.deleteReservation);
+router.delete("/reservation", auth, equipmentControllers.deleteReservation);
 router.get("/reservations", auth, equipmentControllers.getReservations);
 router.get("/bookings", auth, equipmentControllers.getBookings);
 // router.get('/catalog', (req, res)=>{
