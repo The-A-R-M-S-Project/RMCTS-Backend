@@ -146,8 +146,8 @@ exports.makeReservation = async (req, res) => {
       }
       // Adding reservation
       await item.reservations.push(reservation);
-      await item.save((err)=> {
-        if(err) return res.status(400).send(err);
+      await item.save((err) => {
+        if (err) return res.status(400).send(err);
         res.status(200).send(item);
       });
     }
@@ -187,23 +187,22 @@ exports.getBookings = async (req, res) => {
 exports.deleteReservation = async (req, res) => {
   try {
     item_id = req.body.itemId;
-    reservation_id = req.body.reservationID;
+    reservation_id = req.body.reservationId;
 
     // find item
-    const item = await Item.findById(item_id);
-
-    // delete reservation
-    item.reservations = item.reservaions.filter(
-      (item) => item._id != reservation_id
-    );
-    await item.save(function (err) {
+    Item.findOne({ _id: item_id }, function (err, item) {
       if (err) return res.status(400).send(err);
-      res.status(200).send(item);
+      console.log(item);
+      // delete reservation
+      item.reservations = item.reservations.filter(
+        (item) => item._id != reservation_id
+      );
+      item.save(function (err) {
+        if (err) return res.status(400).send(err);
+        res.status(200).send(item);
+      });
     });
-    console.log(item);
   } catch (error) {
     res.send(error);
   }
 };
-
-
