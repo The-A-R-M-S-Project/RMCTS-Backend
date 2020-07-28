@@ -3,6 +3,8 @@ const multer = require("../middlewares/multer");
 const cloudinary = require("../config/cloudinaryConfig");
 const Token = require("../models/token");
 const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+const path = require("path");
 
 exports.createNewAdmin = async (req, res) => {
   try {
@@ -42,7 +44,7 @@ exports.createNewAdmin = async (req, res) => {
 
           // Send email
           let transporter = nodemailer.createTransport({
-            servie: "Sendgrid",
+            service: "gmail",
             auth: {
               user: process.env.EMAIL_ACCOUNT,
               pass: process.env.EMAIL_PASSWORD,
@@ -56,7 +58,7 @@ exports.createNewAdmin = async (req, res) => {
               "Hello,\n\n" +
               "Please verify your account by clicking the link: \nhttp://" +
               req.headers.host +
-              "/confirmation/" +
+              "/admins/confirmation/" +
               token.token +
               ".\n",
           };
@@ -135,40 +137,36 @@ exports.logoutAll = async (req, res) => {
 exports.confirmEmail = async (req, res) => {
   try {
     // find the token
-    Token.findOne({ token: req.body.token }, async function (err, token) {
+    Token.findOne({ token: req.params.token }, async function (err, token) {
       if (!token)
-        return res.status(400).send({
-          type: "not-verified",
-          msg: "Invalid token. Your token may have expired.",
-        });
-      // If token exists
-      Admin.findOne(
-        { _id: token._userId, email: req.body.email },
-        async function (err, admin) {
-          if (!admin)
-            return res.status(400).send({
-              msg: "We were unable to find the user associated with this token",
-            });
-          if (admin.isVerified)
-            return res.status(400).send({
-              type: "already-verified",
-              msg: "This account has already been verified.",
-            });
+       
+        return res
+          .status(400)
+          .sendFile(path.join(__dirname, "..", "/static/invalid.html"));
 
-          // Verifiy account
-          admin.isVerified = true;
-          user.save(function (err) {
-            if (err) {
-              return res.status(500).send({ msg: err.message });
-            }
-            res
-              .status(200)
-              .send(
-                "Your account has been successfully verified, Please log in."
-              );
-          });
-        }
-      );
+      // If token exists
+      Admin.findOne({ _id: token._userId }, async function (err, admin) {
+        if (!admin)
+         
+          return res
+          .status(400)
+          .sendFile(path.join(__dirname, "..", "/static/invalidUser.html"));
+        if (admin.isVerified)
+          
+          return res
+          .status(400)
+          .sendFile(path.join(__dirname, "..", "/static/alreadyVerified.html"));
+
+        // Verifiy account
+        admin.isVerified = true;
+        admin.save(function (err) {
+          if (err) {
+            return res.status(500).send({ msg: err.message });
+          }
+     
+          res.sendFile(path.join(__dirname, "..", "/static/verified.html"))
+        });
+      });
     });
   } catch (error) {
     res.status(500).send(error);
@@ -196,7 +194,7 @@ exports.resendToken = async (req, res) => {
         if (err) return res.status(500).send({ msg: err.message });
         // Send the email
         let transporter = nodemailer.createTransport({
-          servie: "Sendgrid",
+          service: "gmail",
           auth: {
             user: process.env.EMAIL_ACCOUNT,
             pass: process.env.EMAIL_PASSWORD,
@@ -210,13 +208,14 @@ exports.resendToken = async (req, res) => {
             "Hello,\n\n" +
             "Please verify your account by clicking the link: \nhttp://" +
             req.headers.host +
-            "/confirmation/" +
+            "/admins/confirmation/" +
             token.token +
             ".\n",
         };
         transporter.sendMail(mailOptions, function (err) {
           if (err) {
-            return res.status(500).send({ msg: err.message });
+            console.log(err);
+            return res.status(500).send(err);
           }
           res
             .status(200)
