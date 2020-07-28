@@ -35,15 +35,24 @@ const adminSchema = mongoose.Schema({
   },
   profileImage: {
     type: String,
-    // required: true
   },
   profileImageID: {
     type: String,
-    // required: true
   },
   address: {
     type: String
   },
+  role: {
+    type: String,
+    enum: ["institution", "consumer"],
+    default: "institution"
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  passwordResetToken: String,
+  passwordResetExpires: Date,
   tokens: [
     {
       token: {
