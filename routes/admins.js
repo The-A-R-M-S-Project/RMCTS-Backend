@@ -16,6 +16,8 @@ router.get('/me', auth, async (req, res) => {
 })
 router.post('/me/logout', auth, adminControllers.logout)
 
+router.post('/confirmation', adminControllers.confirmEmail)
+
 // HTTP post /admins/logoutall ----> Logs out admin from all devices.
 router.post('/me/logout-all', auth, adminControllers.logoutAll)
 

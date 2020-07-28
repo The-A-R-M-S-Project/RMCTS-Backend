@@ -1,7 +1,7 @@
 const Admin = require("../models/admin");
 const multer = require("../middlewares/multer");
 const cloudinary = require("../config/cloudinaryConfig");
-const { TokenExpiredError } = require("jsonwebtoken");
+const Token = require("../models/token");
 const nodemailer = require("nodemailer");
 
 exports.createNewAdmin = async (req, res) => {
@@ -132,4 +132,45 @@ exports.logoutAll = async (req, res) => {
   }
 };
 
-exports.confirmEmail = async (req, res) => {};
+exports.confirmEmail = async (req, res) => {
+  try {
+    // find the token
+    Token.findOne({ token: req.body.token }, async function (err, token) {
+      if (!token)
+        return res.status(400).send({
+          type: "not-verified",
+          msg: "Invalid token. Your token may have expired.",
+        });
+      // If token exists
+      Admin.findOne(
+        { _id: token._userId, email: req.body.email },
+        async function (err, admin) {
+          if (!admin)
+            return res.status(400).send({
+              msg: "We were unable to find the user associated with this token",
+            });
+          if (admin.isVerified)
+            return res.status(400).send({
+              type: "already-verified",
+              msg: "This account has already been verified.",
+            });
+
+          // Verifiy account
+          admin.isVerified = true;
+          user.save(function (err) {
+            if (err) {
+              return res.status(500).send({ msg: err.message });
+            }
+            res
+              .status(200)
+              .send(
+                "Your account has been successfully verified, Please log in."
+              );
+          });
+        }
+      );
+    });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
