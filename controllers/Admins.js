@@ -174,3 +174,57 @@ exports.confirmEmail = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
+exports.resendToken = async (req, res) => {
+  try {
+    Admin.findOne({ email: req.body.email }, async function (err, admin) {
+      if (!admin)
+        return res.status(400).send({
+          msg: "We were unable to find account associated with this email",
+        });
+      if (admin.isVerified)
+        return res
+          .status(400)
+          .send({ msg: "This account has already been verified" });
+      //Create a verification token
+      const token = new Token({
+        _userId: admin._id,
+        token: crypto.randomBytes(16).toString("hex"),
+      });
+      //Save token
+      await token.save((err) => {
+        if (err) return res.status(500).send({ msg: err.message });
+        // Send the email
+        let transporter = nodemailer.createTransport({
+          servie: "Sendgrid",
+          auth: {
+            user: process.env.EMAIL_ACCOUNT,
+            pass: process.env.EMAIL_PASSWORD,
+          },
+        });
+        let mailOptions = {
+          from: "no-reply@rmcts.com",
+          to: admin.email,
+          subject: "Account Verification Token",
+          text:
+            "Hello,\n\n" +
+            "Please verify your account by clicking the link: \nhttp://" +
+            req.headers.host +
+            "/confirmation/" +
+            token.token +
+            ".\n",
+        };
+        transporter.sendMail(mailOptions, function (err) {
+          if (err) {
+            return res.status(500).send({ msg: err.message });
+          }
+          res
+            .status(200)
+            .send("A verification email has been sent to " + admin.email + ".");
+        });
+      });
+    });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
