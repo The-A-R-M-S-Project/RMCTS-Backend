@@ -13,11 +13,11 @@ const itemSchema = new Schema(
     },
     imageURL: {
       type: String,
-      required: true
+      // required: true
     },
     imageID:{
       type: String,
-      required: true
+      // required: true
     },
     description: {
       type: String,
@@ -26,7 +26,29 @@ const itemSchema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: "Admin"
-    }
+    },
+    reservations: [
+      {
+        start: {
+          type: String,
+          unique: true
+        },
+        end: {
+          type: String,
+          unique: true
+        },
+        reserverId: {
+          type: Schema.Types.ObjectId,
+          ref: "Admin"
+        },
+        title: String,
+        description: String,
+        itemId: {
+          type: Schema.Types.ObjectId,
+          ref: "Item"
+        }
+      }
+    ]
   },
   { timestamps: true }
 );

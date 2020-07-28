@@ -14,30 +14,13 @@ router.post('/login', adminControllers.adminLogin)
 router.get('/me', auth, async (req, res) => {
     res.send(req.admin);
 })
-router.post('/me/logout', auth, async (req, res) => {
-    try {
-        req.admin.tokens = req.admin.tokens.filter((token) => {
-            return token.token != req.token
-        })
-        await req.admin.save()
-        res.send()
-    } catch (err) {
-        res.status(500).send(error)
-    }
-})
+router.post('/me/logout', auth, adminControllers.logout)
+
+router.get('/confirmation/:token', adminControllers.confirmEmail)
+router.post('/resend', adminControllers.resendToken)
 
 // HTTP post /admins/logoutall ----> Logs out admin from all devices.
-router.post('/me/logout-all', auth, async (req, res) => {
-    try {
-        req.admin.tokens.splice(0, req.admin.tokens.length)
-        await req.admin.save()
-        res.send()
-    } catch (error) {
-        res.status(500).send(error)
-    }
-})
-router.get('/', (req, res) => {
-    res.json({ message: 'Hello, admin!' });
-})
+router.post('/me/logout-all', auth, adminControllers.logoutAll)
+
 
 module.exports = router;
