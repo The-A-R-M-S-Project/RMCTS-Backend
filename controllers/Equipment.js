@@ -52,10 +52,6 @@ exports.updateItem = async (req, res) => {
         .status(responseDueToNotFound().status)
         .json(responseDueToNotFound().message);
     } else {
-      const file = multer.dataURI(req).content;
-      const result = await cloudinary.uploader.upload(file);
-      item.imageURL = result.secure_url;
-      item.imageID = result.public_id;
       item.title = req.body.title;
       item.location = req.body.location;
       item.description = req.body.description;

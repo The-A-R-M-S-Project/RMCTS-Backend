@@ -12,7 +12,7 @@ router.post(
 );
 router.get("/equipment", auth, equipmentControllers.getUserEquipment);
 router.delete("/delete-item/:id", auth, equipmentControllers.deleteItem);
-router.put(
+router.patch(
   "/edit-item",
   auth,
   multer.multerUploads,
@@ -25,10 +25,6 @@ router.post("/reservation/:id", auth, equipmentControllers.makeReservation);
 router.delete("/reservation", auth, equipmentControllers.deleteReservation);
 router.get("/reservations", auth, equipmentControllers.getReservations);
 router.get("/bookings", auth, equipmentControllers.getBookings);
-// router.get('/catalog', (req, res)=>{
-//     res.json({message: 'Here goes the catalog!'});
-// })
 
-// add equipment
 
 module.exports = router;
