@@ -2,33 +2,35 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-require('dotenv').config();
+
+require("dotenv").config();
 
 const adminSchema = mongoose.Schema({
-  name: {
+  username: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
+  firstname: String,
+  lastname: String,
   email: {
     type: String,
     required: true,
     unique: true,
     lowercase: true,
-    validate: value => {
+    validate: (value) => {
       if (!validator.isEmail(value)) {
         throw new Error({ error: "Invalid Email address" });
       }
-    }
+    },
   },
   password: {
     type: String,
     required: true,
-    minLength: 7
+    minLength: 7,
   },
   contact: {
     type: String,
-    required: true
   },
   websiteUrl: {
     type: String,
@@ -40,32 +42,32 @@ const adminSchema = mongoose.Schema({
     type: String,
   },
   address: {
-    type: String
+    type: String,
   },
   role: {
     type: String,
     enum: ["institution", "consumer"],
-    default: "institution"
+    default: "institution",
   },
   isVerified: {
     type: Boolean,
-    default: false
+    default: false,
   },
+  passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
   tokens: [
     {
       token: {
         type: String,
-        required: true
-      }
-    }
-  ]
+        required: true,
+      },
+    },
+  ],
 });
 
-
 // Hashing password before saving the admin model
-adminSchema.pre("save", async function(next) {
+adminSchema.pre("save", async function (next) {
   const admin = this;
   if (admin.isModified("password")) {
     admin.password = await bcrypt.hash(admin.password, 8);
@@ -74,7 +76,7 @@ adminSchema.pre("save", async function(next) {
 });
 
 // Generating an authentication token for the admin
-adminSchema.methods.generateAuthToken = async function() {
+adminSchema.methods.generateAuthToken = async function () {
   const admin = this;
   const token = jwt.sign({ _id: admin._id }, process.env.JWT_KEY);
   admin.tokens = admin.tokens.concat({ token });
