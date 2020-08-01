@@ -40,7 +40,10 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "env-cmd": "^10.1.0",
+    "mocha": "^8.1.0",
     "nodemon": "^1.19.4"
   },
   "engines": {
