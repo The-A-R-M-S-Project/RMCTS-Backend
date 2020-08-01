@@ -23,3 +23,15 @@ let DB =
 if (process.env.NODE_ENV === "test"){
     DB = process.env.DATABASE_TEST;
 }
+
+mongoose.connect(DB, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true
+}).then(() => "Database connection successfully established"));
+
+const port = process.env.PORT || 8080;
+const server = app.listen(port, () => {
+    console.log("App is running on port " + port);
+})
