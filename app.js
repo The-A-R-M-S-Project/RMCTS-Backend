@@ -1,6 +1,5 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
 const cloudinary = require("./config/cloudinaryConfig");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
@@ -8,11 +7,10 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const morgan = require("morgan");
 
-
 const equipmentRoutes = require("./routes/equipment");
 const adminRoutes = require("./routes/admins");
 // const connectMongo = require('./utils/database').connectMongo;
-require('dotenv').config();
+require("dotenv").config();
 
 const port = process.env.PORT || 3000;
 
@@ -22,22 +20,22 @@ const app = express();
 // limits requests from one user
 const limit = rateLimit({
   max: 200,
-  windowMs: 60 * 60 *1000,
-  message: "Too many requests made in the previous hour"
-})
+  windowMs: 60 * 60 * 1000,
+  message: "Too many requests made in the previous hour",
+});
 
 //limits all routes
-app.use('/', limit)
+app.use("/", limit);
 
 // Data sanitization agains XSS
 app.use(helmet());
-app.use (xss())
+app.use(xss());
 
 // Data sanitization against NoSQL injection attacks
 app.use(mongoSanitize());
 
 //-------------------------------------------------------
-app.use('*', cloudinary.cloudinaryConfig);
+app.use("*", cloudinary.cloudinaryConfig);
 
 // -------------- parse data ----------------------------
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -52,26 +50,10 @@ app.use((req, res, next) => {
 });
 
 //--------------------- logs ----------------------------
-app.use(morgan('tiny'));
+app.use(morgan("tiny"));
 
 //------------------routes-------------------------------
 app.use(equipmentRoutes);
 app.use("/admins", adminRoutes);
 
-//------------------establishing connection--------------
-mongoose
-  .connect(
-    process.env.DATABASE_URL,
-    {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useUnifiedTopology: true
-    }
-  )
-  .then(result => {
-    app.listen(port);
-    console.log("App is running on port 3000");
-  })
-  .catch(err => {
-    console.log(err);
-  });
+module.exports = app;
