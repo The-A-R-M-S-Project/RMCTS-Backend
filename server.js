@@ -29,9 +29,19 @@ mongoose.connect(DB, {
     useCreateIndex: true,
     useFindAndModify: false,
     useUnifiedTopology: true
-}).then(() => "Database connection successfully established"));
+}).then(() => "Database connection successfully established");
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
-    console.log("App is running on port " + port);
-})
+    console.log("App is running on port " + process.env.PORT || 3000);
+});
+
+if (process.env.NODE_ENV !== "test"){
+    process.on('unhandledRejection', err => {
+        console.log('UNHANDELED REJECTION!')
+        console.log(err.name, err.message);
+        server.close(() => {
+            process.exit(1);
+        })
+    })
+}
