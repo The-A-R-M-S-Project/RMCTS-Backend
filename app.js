@@ -53,7 +53,7 @@ app.use((req, res, next) => {
 app.use(morgan("tiny"));
 
 //------------------routes-------------------------------
-app.use(equipmentRoutes);
-app.use("/admins", userRoutes);
+app.use("/equipment", equipmentRoutes);
+app.use("/users", userRoutes);
 
 module.exports = app;
