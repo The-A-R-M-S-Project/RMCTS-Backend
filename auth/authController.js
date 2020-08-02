@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const Token = require("../models/token");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -38,7 +41,7 @@ exports.signup = async (req, res) => {
     //   adm.profileImageID = result.public_id;
 
     // Cheking if account already exists
-    Admin.findOne({ email: usr.email }, async function (err, user) {
+    User.findOne({ email: usr.email }, async function (err, user) {
       if (user)
         return res.status(400).send({
           msg:
