@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
-const adminSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -66,37 +66,37 @@ const adminSchema = mongoose.Schema({
   ],
 });
 
-// Hashing password before saving the admin model
-adminSchema.pre("save", async function (next) {
-  const admin = this;
-  if (admin.isModified("password")) {
-    admin.password = await bcrypt.hash(admin.password, 8);
+// Hashing password before saving the user model
+userSchema.pre("save", async function (next) {
+  const user = this;
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 8);
   }
   next();
 });
 
-// Generating an authentication token for the admin
-adminSchema.methods.generateAuthToken = async function () {
-  const admin = this;
-  const token = jwt.sign({ _id: admin._id }, process.env.JWT_KEY);
-  admin.tokens = admin.tokens.concat({ token });
-  await admin.save();
+// Generating an authentication token for the user
+userSchema.methods.generateAuthToken = async function () {
+  const user = this;
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY);
+  user.tokens = user.tokens.concat({ token });
+  await user.save();
   return token;
 };
 
-// Searching for the admin by email and password.
-adminSchema.statics.findByCredentials = async (email, password) => {
-  const admin = await Admin.findOne({ email });
-  if (!admin) {
+// Searching for the user by email and password.
+userSchema.statics.findByCredentials = async (email, password) => {
+  const user = await user.findOne({ email });
+  if (!user) {
     throw new Error({ error: "Invalid login credentials" });
   }
-  const isPasswordMatch = await bcrypt.compare(password, admin.password);
+  const isPasswordMatch = await bcrypt.compare(password, user.password);
   if (!isPasswordMatch) {
     throw new Error({ error: "Invalid login credentials" });
   }
-  return admin;
+  return user;
 };
 
-const Admin = mongoose.model("Admin", adminSchema);
+const User = mongoose.model("user", userSchema);
 
-module.exports = Admin;
+module.exports = User;

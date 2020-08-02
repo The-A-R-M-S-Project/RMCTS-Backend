@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Admin = require("../models/admin");
+const User = require("../models/user");
 
 module.exports = async (req, res, next) => {
   try {
@@ -13,11 +13,11 @@ module.exports = async (req, res, next) => {
 
     const data = await promisfy(jwt.verify)(token, process.env.JWT_KEY);
     
-    const admin = await Admin.findOne({ _id: data._id, "tokens.token": token });
-    if (!admin) {
+    const user = await User.findOne({ _id: data._id, "tokens.token": token });
+    if (!user) {
       throw new Error();
     }
-    req.admin = admin;
+    req.user = user;
     req.token = token;
     next();
   } catch (error) {

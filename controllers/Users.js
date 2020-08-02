@@ -1,4 +1,4 @@
-const Admin = require("../models/admin");
+const User = require("../models/user");
 const multer = require("../middlewares/multer");
 const cloudinary = require("../config/cloudinaryConfig");
 const Token = require("../models/token");
@@ -18,21 +18,21 @@ exports.confirmEmail = async (req, res) => {
           .sendFile(path.join(__dirname, "..", "/static/invalid.html"));
 
       // If token exists
-      Admin.findOne({ _id: token._userId }, async function (err, admin) {
-        if (!admin)
+      User.findOne({ _id: token._userId }, async function (err, user) {
+        if (!user)
          
           return res
           .status(400)
           .sendFile(path.join(__dirname, "..", "/static/invalidUser.html"));
-        if (admin.isVerified)
+        if (user.isVerified)
           
           return res
           .status(400)
           .sendFile(path.join(__dirname, "..", "/static/alreadyVerified.html"));
 
         // Verifiy account
-        admin.isVerified = true;
-        admin.save(function (err) {
+        user.isVerified = true;
+        user.save(function (err) {
           if (err) {
             return res.status(500).send({ msg: err.message });
           }
@@ -48,18 +48,18 @@ exports.confirmEmail = async (req, res) => {
 
 exports.resendToken = async (req, res) => {
   try {
-    Admin.findOne({ email: req.body.email }, async function (err, admin) {
-      if (!admin)
+    User.findOne({ email: req.body.email }, async function (err, user) {
+      if (!user)
         return res.status(400).send({
           msg: "We were unable to find account associated with this email",
         });
-      if (admin.isVerified)
+      if (user.isVerified)
         return res
           .status(400)
           .send({ msg: "This account has already been verified" });
       //Create a verification token
       const token = new Token({
-        _userId: admin._id,
+        _userId: user._id,
         token: crypto.randomBytes(16).toString("hex"),
       });
       //Save token
@@ -75,13 +75,13 @@ exports.resendToken = async (req, res) => {
         });
         let mailOptions = {
           from: "no-reply@rmcts.com",
-          to: admin.email,
+          to: user.email,
           subject: "Account Verification Token",
           text:
             "Hello,\n\n" +
             "Please verify your account by clicking the link: \nhttp://" +
             req.headers.host +
-            "/admins/confirmation/" +
+            "/users/confirmation/" +
             token.token +
             ".\n",
         };
@@ -92,7 +92,7 @@ exports.resendToken = async (req, res) => {
           }
           res
             .status(200)
-            .send("A verification email has been sent to " + admin.email + ".");
+            .send("A verification email has been sent to " + user.email + ".");
         });
       });
     });

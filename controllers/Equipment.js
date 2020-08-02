@@ -1,4 +1,4 @@
-const Admin = require("../models/admin");
+const User = require("../models/user");
 const Item = require("../models/item");
 const multer = require("../middlewares/multer");
 const cloudinary = require("../config/cloudinaryConfig");
@@ -11,7 +11,7 @@ exports.addItem = async (req, res) => {
     itm.imageURL = result.secure_url;
     itm.imageID = result.public_id;
     const item = new Item(itm);
-    item.userId = await req.admin._id;
+    item.userId = await req.user._id;
     await item.save();
     res.status(201).send(item);
   } catch (error) {
@@ -21,7 +21,7 @@ exports.addItem = async (req, res) => {
 exports.getItem = async (req, res) => {
   try {
     const item = await Item.findOne({ _id: req.params.id });
-    const owner = await Admin.findOne({ _id: item.userId });
+    const owner = await User.findOne({ _id: item.userId });
     res.status(200).send([
       item,
       {
@@ -37,7 +37,7 @@ exports.getItem = async (req, res) => {
 };
 exports.getUserEquipment = async (req, res) => {
   try {
-    const equipment = await Item.find({ userId: req.admin._id });
+    const equipment = await Item.find({ userId: req.user._id });
     res.json(equipment);
   } catch (error) {
     res.status(400).send(error);
@@ -55,7 +55,7 @@ exports.updateItem = async (req, res) => {
       item.title = req.body.title;
       item.location = req.body.location;
       item.description = req.body.description;
-      item.userId = await req.admin._id;
+      item.userId = await req.user._id;
       await item.save();
       res.status(200).json(item);
     }
@@ -114,7 +114,7 @@ exports.makeReservation = async (req, res) => {
     const reservation = req.body;
     reservation.itemId = id;
 
-    reservation.reserverId = await req.admin._id.toString();
+    reservation.reserverId = await req.user._id.toString();
     const item = await Item.findById(id);
 
     // checking if dates are already occupied
@@ -154,7 +154,7 @@ exports.makeReservation = async (req, res) => {
 
 exports.getReservations = async (req, res) => {
   try {
-    const items = await Item.find({ "reservations.reserverId": req.admin._id });
+    const items = await Item.find({ "reservations.reserverId": req.user._id });
     // console.log(items)
     reservations = [];
     for (i of items) {
@@ -169,7 +169,7 @@ exports.getReservations = async (req, res) => {
 
 exports.getBookings = async (req, res) => {
   try {
-    const items = await Item.find({ userId: req.admin._id });
+    const items = await Item.find({ userId: req.user._id });
     reservations = [];
     for (i of items) {
       reservations.push(...i.reservations);

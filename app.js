@@ -8,7 +8,7 @@ const xss = require("xss-clean");
 const morgan = require("morgan");
 
 const equipmentRoutes = require("./routes/equipment");
-const adminRoutes = require("./routes/admins");
+const userRoutes = require("./routes/user");
 // const connectMongo = require('./utils/database').connectMongo;
 require("dotenv").config();
 
@@ -54,6 +54,6 @@ app.use(morgan("tiny"));
 
 //------------------routes-------------------------------
 app.use(equipmentRoutes);
-app.use("/admins", adminRoutes);
+app.use("/admins", userRoutes);
 
 module.exports = app;
