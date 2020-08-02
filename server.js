@@ -20,28 +20,32 @@ let DB =
     ? process.env.DATABASE_PRODUCTION
     : process.env.DATABASE_LOCAL;
 
-if (process.env.NODE_ENV === "test"){
-    DB = process.env.DATABASE_TEST;
+if (process.env.NODE_ENV === "test") {
+  DB = process.env.DATABASE_TEST;
 }
 
-mongoose.connect(DB, {
+mongoose
+  .connect(DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
-    useUnifiedTopology: true
-}).then(() => "Database connection successfully established");
+    useUnifiedTopology: true,
+  })
+  .then(() => "Database connection successfully established");
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
-    console.log("App is running on port " + process.env.PORT || 3000);
+  console.log("App is running on port " + process.env.PORT || 3000);
 });
 
-if (process.env.NODE_ENV !== "test"){
-    process.on('unhandledRejection', err => {
-        console.log('UNHANDELED REJECTION!')
-        console.log(err.name, err.message);
-        server.close(() => {
-            process.exit(1);
-        })
-    })
+if (process.env.NODE_ENV !== "test") {
+  process.on("unhandledRejection", (err) => {
+    console.log("UNHANDELED REJECTION!");
+    console.log(err.name, err.message);
+    server.close(() => {
+      process.exit(1);
+    });
+  });
 }
+
+module.exports = app;
