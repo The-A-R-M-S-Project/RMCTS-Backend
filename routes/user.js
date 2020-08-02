@@ -5,6 +5,7 @@ const userControllers = require("../controllers/Users");
 const authProtector = require("../auth/authProtector");
 const multer = require("../middlewares/multer");
 const authControllers = require("../auth/authController");
+
 router.use(authProtector());
 
 //====================routes===========================
