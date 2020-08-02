@@ -1,30 +1,24 @@
 const express = require("express");
 const equipmentControllers = require("../controllers/Equipment");
 const router = express.Router();
-const auth = require("../auth/authController");
+const AuthProtector = require("../auth/authProtector");
 const multer = require("../middlewares/multer");
 
-router.post(
-  "/add-item",
-  auth,
-  multer.multerUploads,
-  equipmentControllers.addItem
-);
-router.get("/equipment", auth, equipmentControllers.getUserEquipment);
-router.delete("/delete-item/:id", auth, equipmentControllers.deleteItem);
+router.use(AuthProtector());
+router.post("/add-item", multer.multerUploads, equipmentControllers.addItem);
+router.get("/equipment", equipmentControllers.getUserEquipment);
+router.delete("/delete-item/:id", equipmentControllers.deleteItem);
 router.patch(
   "/edit-item",
-  auth,
   multer.multerUploads,
   equipmentControllers.updateItem
 );
 router.get("/catalog-default", equipmentControllers.getCatalogDefault);
-router.post("/search", auth, equipmentControllers.getQueryMatch);
+router.post("/search", equipmentControllers.getQueryMatch);
 router.get("/item/:id", equipmentControllers.getItem);
-router.post("/reservation/:id", auth, equipmentControllers.makeReservation);
-router.delete("/reservation", auth, equipmentControllers.deleteReservation);
-router.get("/reservations", auth, equipmentControllers.getReservations);
-router.get("/bookings", auth, equipmentControllers.getBookings);
-
+router.post("/reservation/:id", equipmentControllers.makeReservation);
+router.delete("/reservation", equipmentControllers.deleteReservation);
+router.get("/reservations", equipmentControllers.getReservations);
+router.get("/bookings", equipmentControllers.getBookings);
 
 module.exports = router;
