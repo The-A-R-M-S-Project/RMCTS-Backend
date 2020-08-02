@@ -3,8 +3,17 @@ const User = require("../models/user");
 
 module.exports = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.replace("Bearer ", "");
-
+    let token;
+    // Checking for token existence
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.replace("Bearer ", "");
+    } else if (req.cookies.jwt) {
+      token = req.cookies.jwt;
+    }
+    // verify token
     if (!token) {
       return res
         .status(401)
@@ -12,7 +21,7 @@ module.exports = async (req, res, next) => {
     }
 
     const data = await promisfy(jwt.verify)(token, process.env.JWT_KEY);
-    
+
     const user = await User.findOne({ _id: data._id, "tokens.token": token });
     if (!user) {
       throw new Error();
