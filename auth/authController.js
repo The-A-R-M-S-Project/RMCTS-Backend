@@ -138,7 +138,7 @@ exports.logout = async (req, res) => {
   };
 };
 
-exports.restricTo = async (role) => {
+exports.restricTo = (role) => {
   return (req, res, next) => {
     if (role !== req.user.role) {
       return next(
