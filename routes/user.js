@@ -16,9 +16,18 @@ router.post("/logout", authControllers.logout);
 router.get("/me", (req, res) => {
   res.send(req.user);
 });
-
+// ---- TODO ----
+// - Change Password
+// - Forgot Password
 //===================================================================
 router.get("/confirmation/:token", userControllers.confirmEmail);
 router.post("/resend", userControllers.resendToken);
+
+// ---- TODO ----
+// - Edit profile
+// - Update profile picture
+// - get profile
+// - send email
+
 
 module.exports = router;

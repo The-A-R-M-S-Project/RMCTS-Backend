@@ -35,6 +35,8 @@ router.get(
   authControllers.restricTo("institution"),
   equipmentControllers.getBookings
 );
+// ---- TODO ----
+// - update item image
 
 //========================= for all users ==========================================
 router.get("/catalog-default", equipmentControllers.getCatalogDefault);
