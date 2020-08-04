@@ -34,14 +34,9 @@ const sendToken = (user, status, res) => {
 exports.signup = async (req, res) => {
   try {
     const usr = req.body;
-    //   const file = await multer.dataURI(req).content;
-
-    //   await cloudinary.uploader.upload(file);
-    //   adm.profileImage = result.secure_url;
-    //   adm.profileImageID = result.public_id;
 
     // Cheking if account already exists
-    User.findOne({ email: usr.email }, async function (err, user) {
+    User.findOne({ email: usr.email }, async (err, user) => {
       if (user)
         return res.status(400).send({
           msg:
@@ -50,7 +45,7 @@ exports.signup = async (req, res) => {
 
       // Create account
       user = new User(usr);
-      await user.save(function (err) {
+      await user.save((err) => {
         if (err) {
           return res.status(500).send({ msg: err.message });
         }
@@ -62,7 +57,7 @@ exports.signup = async (req, res) => {
         });
 
         // Save the verification token
-        token.save(function (err) {
+        await token.save((err) => {
           if (err) {
             return res.status(500).send({ msg: err.message });
           }
