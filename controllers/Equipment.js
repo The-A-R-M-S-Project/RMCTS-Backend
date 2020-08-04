@@ -80,31 +80,32 @@ exports.deleteItem = async (req, res) => {
 };
 
 exports.getQueryMatch = async (req, res) => {
-  Item.search(req.body.search, function (err, data) {
-    // console.log(data);
-    // console.log(req.body.search)
-    if (err) {
-      res.send(err);
-    } else {
-      res.status(200).send(data);
+  try {
+    if (req.body.search === "") {
+      const data = await Item.find().sort({ createdAt: -1 }).limit(6);
+      if (!data)
+        return res.status(400).json({ msg: "Query was not successful" });
+      return res.status(200).send(data);
     }
-  });
+    Item.search(req.body.search, function (err, data) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.status(200).send(data);
+      }
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 };
 
 exports.getCatalogDefault = async (req, res) => {
   try {
-    Item.find()
-      .sort({ createdAt: -1 })
-      .limit(6)
-      .exec(function (error, data) {
-        if (error) {
-          res.status(400).send(error);
-        } else {
-          res.status(200).send(data);
-        }
-      });
+    const data = await Item.find().sort({ createdAt: -1 }).limit(6);
+    if (!data) return res.status(400).json({ msg: "Query was not successful" });
+    return res.status(200).send(data);
   } catch (error) {
-    res.send(error);
+    return res.send(error);
   }
 };
 
