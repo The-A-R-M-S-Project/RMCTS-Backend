@@ -71,7 +71,7 @@ exports.signup = async (req, res) => {
         "Hello,\n\n" +
         "Please verify your account by clicking the link: \nhttp://" +
         req.headers.host +
-        "/admins/confirmation/" +
+        "/users/confirmation/" +
         token.token +
         ".\n",
     };

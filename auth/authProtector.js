@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
 const User = require("../models/user");
 
 module.exports = () => {
@@ -23,9 +24,9 @@ module.exports = () => {
         );
       }
 
-      const data = await promisfy(jwt.verify)(token, process.env.JWT_KEY);
+      const data = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-      const user = await User.findOne({ _id: data._id, "tokens.token": token });
+      const user = await User.findById(data.id);
       if (!user) {
         next(
           res
@@ -39,7 +40,7 @@ module.exports = () => {
       next();
     } catch (error) {
       next(
-        res.status(401).send({ error: "Your're not authorised to access this" })
+        res.status(401).send({ error: error })
       );
     }
   };
