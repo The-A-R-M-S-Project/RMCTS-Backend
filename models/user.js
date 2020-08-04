@@ -35,6 +35,9 @@ const userSchema = mongoose.Schema({
   websiteUrl: {
     type: String,
   },
+  bio: {
+    type: String
+  },
   profileImage: {
     type: String,
   },

@@ -84,11 +84,9 @@ exports.resendToken = async (req, res) => {
     };
     await transporter.sendMail(mailOptions);
 
-    res
-      .status(200)
-      .json({
-        msg: "A verification email has been sent to " + user.email + ".",
-      });
+    res.status(200).json({
+      msg: "A verification email has been sent to " + user.email + ".",
+    });
   } catch (error) {
     res.status(500).send(error);
   }
@@ -108,5 +106,29 @@ exports.updateProfileImage = async (req, res) => {
     res.status(200).send({ msg: "Profile image successfully updated" });
   } catch (err) {
     res.status(500).send(err);
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const id = req.body._id;
+    const user = await User.findById(id);
+    if (!user) {
+      return res
+        .status(responseDueToNotFound().status)
+        .json(responseDueToNotFound().message);
+    } else {
+      user.username = req.body.username;
+      user.firstname = req.body.firstname;
+      user.lastname = req.body.lastname;
+      user.contact = req.body.contact;
+      user.bio = req.body.bio;
+      user.websiteURL = req.body.websiteURL;
+      user.address = req.body.address;
+      await user.save();
+      return res.status(200).json(user);
+    }
+  } catch (error) {
+    return res.status(404).json(error);
   }
 };

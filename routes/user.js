@@ -23,10 +23,11 @@ router.get("/confirmation/:token", userControllers.confirmEmail);
 router.post("/resend", userControllers.resendToken);
 
 // ---- TODO ----
-// - Edit profile
-
-// - Update profile picture
 router.use(authProtector())
+
+// - Edit profile
+router.patch("/profile", userControllers.updateProfile)
+// - Update profile picture
 router.patch("/profile-image", userControllers.updateProfileImage)
 router.get("/me", (req, res) => {
   res.send(req.user);
