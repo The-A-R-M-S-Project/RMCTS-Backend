@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const userControllers = require("../controllers/Users");
 
+const authProtector = require("../auth/authProtector");
 const multer = require("../middlewares/multer");
 const authControllers = require("../auth/authController");
 
@@ -13,9 +14,7 @@ const authControllers = require("../auth/authController");
 router.post("/", authControllers.signup);
 router.post("/login", authControllers.login);
 router.post("/logout", authControllers.logout);
-router.get("/me", (req, res) => {
-  res.send(req.user);
-});
+
 // ---- TODO ----
 // - Change Password
 // - Forgot Password
@@ -25,8 +24,14 @@ router.post("/resend", userControllers.resendToken);
 
 // ---- TODO ----
 // - Edit profile
+
 // - Update profile picture
+router.use(authProtector())
 router.patch("/profile-image", userControllers.updateProfileImage)
+router.get("/me", (req, res) => {
+  res.send(req.user);
+});
+
 // - get profile
 // - send email
 
