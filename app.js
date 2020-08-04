@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 
 const equipmentRoutes = require("./routes/equipment");
 const userRoutes = require("./routes/user");
@@ -41,6 +42,8 @@ app.use("*", cloudinary.cloudinaryConfig);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// -------------- use cookies ---------------------------
+app.use(cookieParser())
 // ---------------- ENABLE CORS -------------------------
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
