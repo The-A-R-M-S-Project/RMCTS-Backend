@@ -36,67 +36,55 @@ exports.signup = async (req, res) => {
     const usr = req.body;
 
     // Cheking if account already exists
-    User.findOne({ email: usr.email }, async (err, user) => {
-      if (user)
-        return res.status(400).send({
-          msg:
-            "The email address you have entered is already associated with another account",
-        });
+    let user = await User.findOne({ email: usr.email });
 
-      // Create account
-      user = new User(usr);
-      await user.save((err) => {
-        if (err) {
-          return res.status(500).send({ msg: err.message });
-        }
-
-        // Create a verification token for this account
-        var token = new Token({
-          _userId: user._id,
-          token: crypto.randomBytes(16).toString("hex"),
-        });
-
-        // Save the verification token
-        await token.save((err) => {
-          if (err) {
-            return res.status(500).send({ msg: err.message });
-          }
-
-          // Send email
-          let transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: process.env.EMAIL_ACCOUNT,
-              pass: process.env.EMAIL_PASSWORD,
-            },
-          });
-          let mailOptions = {
-            from: "no-reply@rmcts.com",
-            to: user.email,
-            subject: "Account Verification Token",
-            text:
-              "Hello,\n\n" +
-              "Please verify your account by clicking the link: \nhttp://" +
-              req.headers.host +
-              "/admins/confirmation/" +
-              token.token +
-              ".\n",
-          };
-          transporter.sendMail(mailOptions, function (err) {
-            if (err) {
-              return res.status(500).send({ msg: err.message });
-            }
-            res
-              .status(200)
-              .send(
-                "A verification email has been sent to " + user.email + "."
-              );
-          });
-        });
+    if (user)
+      return res.status(400).json({
+        msg:
+          "The email address you have entered is already associated with another account",
       });
+
+    // Create account
+    user = new User(usr);
+    await user.save();
+
+    // Create a verification token for this account
+    var token = new Token({
+      _userId: user._id,
+      token: crypto.randomBytes(16).toString("hex"),
     });
+    await token.save();
+
+    // Send email
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_ACCOUNT,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+    let mailOptions = {
+      from: "no-reply@rmcts.com",
+      to: user.email,
+      subject: "Account Verification Token",
+      text:
+        "Hello,\n\n" +
+        "Please verify your account by clicking the link: \nhttp://" +
+        req.headers.host +
+        "/admins/confirmation/" +
+        token.token +
+        ".\n",
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res
+      .status(200)
+      .json({
+        msg: "A verification email has been sent to " + user.email + ".",
+      });
   } catch (err) {
-    res.status(400).json({
+    res.status(500).json({
       message: "someting went wrong while processing your request",
       data: {
         err,
