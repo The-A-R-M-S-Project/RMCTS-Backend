@@ -26,6 +26,7 @@ router.post("/resend", userControllers.resendToken);
 // ---- TODO ----
 // - Edit profile
 // - Update profile picture
+router.patch("/profile-image", userControllers.updateProfileImage)
 // - get profile
 // - send email
 

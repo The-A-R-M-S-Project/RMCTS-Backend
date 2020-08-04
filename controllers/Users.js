@@ -92,11 +92,28 @@ exports.resendToken = async (req, res) => {
           }
           res
             .status(200)
-            .send("A verification email has been sent to " + user.email + ".");
+            .send({msg: "A verification email has been sent to " + user.email + "."});
         });
       });
     });
   } catch (error) {
     res.status(500).send(error);
+  }
+};
+
+exports.updateProfileImage = async (req, res) => {
+  try {
+    const file = await multer.dataURI(req).content;
+
+    const result = await cloudinary.uploader.upload(file);
+
+    const user = await User.findOne({ _id: req._id });
+    user.profileImage = result.secure_url;
+    user.profileImageID = result.public_id;
+
+    await user.save();
+    res.status(200).send({msg: "Profile image successfully updated"});
+  } catch (err) {
+    res.status(500).send(err);
   }
 };
