@@ -46,7 +46,7 @@ const userSchema = mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["institution", "consumer"],
+    enum: ["institution", "individual"],
     default: "institution",
   },
   isVerified: {
@@ -69,7 +69,7 @@ userSchema.pre("save", async function (next) {
 
 // Searching for the user by email and password.
 userSchema.statics.findByCredentials = async (email, password) => {
-  const user = await user.findOne({ email });
+  const user = await User.findOne({ email });
   if (!user) {
     throw new Error({ error: "Invalid login credentials" });
   }
