@@ -111,7 +111,7 @@ exports.updateProfileImage = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const id = req.body._id;
+    const id = req.params.id;
     const user = await User.findById(id);
     if (!user) {
       return res
@@ -129,6 +129,32 @@ exports.updateProfile = async (req, res) => {
       return res.status(200).json(user);
     }
   } catch (error) {
-    return res.status(404).json(error);
+    return res.status(404).json({ error: error });
+  }
+};
+
+exports.getProfile = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = await User.findById(id);
+    if (!user) {
+      return res
+        .status(responseDueToNotFound().status)
+        .json(responseDueToNotFound().message);
+    }
+    let {
+      username,
+      firstname,
+      lastname,
+      contact,
+      bio,
+      website,
+      address,
+    } = user;
+    return res
+      .status(200)
+      .json({ username, firstname, lastname, contact, bio, website, address });
+  } catch (error) {
+    return res.status(500).json(error);
   }
 };

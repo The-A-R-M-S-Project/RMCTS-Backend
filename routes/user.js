@@ -24,16 +24,13 @@ router.post("/resend", userControllers.resendToken);
 
 // ---- TODO ----
 router.use(authProtector())
-
-// - Edit profile
-router.patch("/profile", userControllers.updateProfile)
-// - Update profile picture
+router.patch("/profile/:id", userControllers.updateProfile)
 router.patch("/profile-image", userControllers.updateProfileImage)
 router.get("/me", (req, res) => {
   res.send(req.user);
 });
-
 // - get profile
+router.get("/profile/:id", userControllers.getProfile)
 // - send email
 
 
