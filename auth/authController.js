@@ -78,11 +78,9 @@ exports.signup = async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    return res
-      .status(200)
-      .json({
-        msg: "A verification email has been sent to " + user.email + ".",
-      });
+    return res.status(200).json({
+      msg: "A verification email has been sent to " + user.email + ".",
+    });
   } catch (err) {
     res.status(500).json({
       message: "someting went wrong while processing your request",
@@ -114,14 +112,16 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.logout = async (req, res) => {
-  return (req, res) => {
+exports.logout = (req, res) => {
+  try {
     res.cookie("jwt", "no-auth", {
       expires: new Date(Date.now() + 10 * 1000),
       httpOnly: true,
     });
-    res.status(200).json({ status: "success" });
-  };
+    return res.status(200).json({ status: "success" });
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
 };
 
 exports.restricTo = (role) => {
