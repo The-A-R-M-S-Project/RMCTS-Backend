@@ -203,3 +203,22 @@ exports.deleteReservation = async (req, res) => {
     res.send(error);
   }
 };
+
+exports.updateItemImage = async (req, res) => {
+  try {
+    const file = await multer.dataURI(req).content;
+
+    const result = await cloudinary.uploader.upload(file);
+
+    const item = await Item.findById(req.params.id);
+    if(!item) return res.status(400).send("Item was not found");
+
+    item.ImageURL = result.secure_url;
+    item.ImageID = result.public_id;
+
+    await item.save();
+    res.status(200).json({ msg: "Profile image successfully updated" , item});
+  } catch (err) {
+    res.status(500).send(err);
+  }
+}

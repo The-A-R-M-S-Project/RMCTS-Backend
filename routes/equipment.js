@@ -35,7 +35,7 @@ router.get(
   equipmentControllers.getBookings
 );
 // ---- TODO ----
-// - update item image
+
 
 //========================= for all users ==========================================
 router.get("/catalog", equipmentControllers.getCatalogDefault);
@@ -44,5 +44,6 @@ router.get("/item/:id", equipmentControllers.getItem);
 router.post("/reservation/:id", equipmentControllers.makeReservation);
 router.delete("/reservation", equipmentControllers.deleteReservation);
 router.get("/reservations", equipmentControllers.getReservations);
+router.patch("/image", equipmentControllers.updateItemImage)
 
 module.exports = router;
