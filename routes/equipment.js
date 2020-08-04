@@ -9,7 +9,7 @@ router.use(authProtector());
 
 //============================ for only institutions ======================================
 router.post(
-  "/add-item",
+  "/item",
   authControllers.restricTo("institution"),
   multer.multerUploads,
   equipmentControllers.addItem
@@ -20,14 +20,13 @@ router.get(
   equipmentControllers.getUserEquipment
 );
 router.delete(
-  "/delete-item/:id",
+  "/item/:id",
   authControllers.restricTo("institution"),
   equipmentControllers.deleteItem
 );
 router.patch(
-  "/edit-item",
+  "/item",
   authControllers.restricTo("institution"),
-  multer.multerUploads,
   equipmentControllers.updateItem
 );
 router.get(
@@ -39,7 +38,7 @@ router.get(
 // - update item image
 
 //========================= for all users ==========================================
-router.get("/catalog-default", equipmentControllers.getCatalogDefault);
+router.get("/catalog", equipmentControllers.getCatalogDefault);
 router.post("/search", equipmentControllers.getQueryMatch);
 router.get("/item/:id", equipmentControllers.getItem);
 router.post("/reservation/:id", equipmentControllers.makeReservation);
