@@ -6,16 +6,11 @@ const server = require("../server");
 const data = require("./data");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
+const { createUser } = require("../scripts/createuser")
 
 chai.use(chaiHttp);
 const client = chai.request.agent(server);
 chai.should();
-
-const createUser = async (data) => {
-  const user = new User(data);
-  await user.save();
-  return user;
-};
 
 describe("User", () => {
   beforeEach((done) => {
