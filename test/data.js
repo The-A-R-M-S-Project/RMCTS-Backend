@@ -20,3 +20,13 @@ exports.unVerifiedInstitution = {
     password: "123456789",
     isVerified: false
 }
+exports.updatedProfile = {
+    username: "Creativity_Advocates",
+    contact: "+256782000000",
+    firstname: "Creativity",
+    lastname: "Advocates",
+    bio: "We are an awesome company",
+    address: "Kampala, Uganda",
+    password: "123456789",
+    websiteURL: ""
+}

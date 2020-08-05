@@ -9,7 +9,7 @@ const chaiHttp = require("chai-http");
 
 chai.use(chaiHttp);
 const client = chai.request.agent(server);
-const should = chai.should();
+chai.should();
 
 const createUser = async (data) => {
   const user = new User(data);
@@ -34,7 +34,7 @@ describe("User", () => {
     it("Should successfully create new Institution account and send verification token", async () => {
       const { username, email, password } = data.institution2;
 
-      const signupPromise = new Promise((resolve, response) => {
+      const signupPromise = new Promise((resolve) => {
         client
           .post("/users/")
           .send({ username, email, password })
@@ -55,7 +55,7 @@ describe("User", () => {
       await createUser(data.verifiedInstitution);
       const { email, password } = data.verifiedInstitution;
 
-      const loginPromise = new Promise((resolve, response) => {
+      const loginPromise = new Promise((resolve) => {
         client
           .post("/users/login")
           .send({ email, password })
@@ -79,7 +79,7 @@ describe("User", () => {
 
       const { email, password } = data.unVerifiedInstitution;
 
-      const loginPromise = new Promise((resolve, response) => {
+      const loginPromise = new Promise((resolve) => {
         client
           .post("/users/login")
           .send({ email, password })
@@ -103,7 +103,7 @@ describe("User", () => {
       await createUser(data.verifiedInstitution);
       const { email, password, username } = data.verifiedInstitution;
 
-      const loginPromise = new Promise((resolve, response) => {
+      const loginPromise = new Promise((resolve) => {
         client
           .post("/users/login")
           .send({ email, password })
@@ -112,7 +112,7 @@ describe("User", () => {
           });
       });
       const loginResponse = await loginPromise;
-      const getMePromise = new Promise((resolve, response) => {
+      const getMePromise = new Promise((resolve) => {
         client
           .get("/users/me")
           .set("Authorization", `Bearer ${loginResponse.body.token}`)
@@ -127,6 +127,39 @@ describe("User", () => {
       res.body.should.have.property("username").eq(username);
       res.body.should.have.property("email").eq(email);
       res.body.should.have.property("role").eq("institution");
+    });
+  });
+
+  describe("PATCH /profile/:id", () => {
+    it("Should update user profile", async () => {
+      await createUser(data.verifiedInstitution);
+      const { email, password } = data.verifiedInstitution;
+      const profile = data.updatedProfile;
+      const loginPromise = new Promise((resolve) => {
+        client
+          .post("/users/login")
+          .send({ email, password })
+          .then((res) => resolve(res));
+      });
+      const loginResponse = await loginPromise;
+      const updateProfilePromise = new Promise((resolve) => {
+        client
+          .patch(`/users/profile/${loginResponse.body.data.user._id}`)
+          .set("Authorization", `Bearer ${loginResponse.body.token}`)
+          .send(profile)
+          .then((res) => resolve(res));
+      });
+
+      const res = await updateProfilePromise;
+      res.should.have.status(200);
+      res.should.be.a("object");
+      res.body.should.have.property("firstname").eq(profile.firstname);
+      res.body.should.have.property("lastname").eq(profile.lastname);
+      res.body.should.have.property("contact").eq(profile.contact);
+      res.body.should.have.property("bio").eq(profile.bio);
+      res.body.should.have.property("username").eq(profile.username);
+      res.body.should.have.property("address").eq(profile.address);
+      res.body.should.have.property("websiteURL").eq(profile.websiteURL);
     });
   });
 });
