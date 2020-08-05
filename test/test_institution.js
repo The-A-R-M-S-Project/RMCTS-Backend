@@ -37,4 +37,20 @@ describe("User", () => {
         res.body.should.be.a("object");
     });
   });
+
+  describe("/POST /user/login", () => {
+    it("Should succesfully login verified user", async (req, res) => {
+      const { username, email, password } = data.verifiedUser;
+
+      const signupPromise = new Promise((resolve, response) => {
+        client
+          .post("/users/")
+          .send({ username, email, password })
+          .then((res) => resolve(res));
+      });
+
+      await signupPromise;
+      
+    })
+  })
 });
