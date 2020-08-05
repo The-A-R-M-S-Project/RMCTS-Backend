@@ -13,6 +13,20 @@ chai.use(chaiHttp);
 const client = chai.request.agent(server);
 chai.should();
 
+const addItem = (item, image, token) => {
+  return new Promise((resolve) => {
+    client
+      .post("/equipment/item")
+      .set("Authorization", `Bearer ${token}`)
+      .field("_id", item._id)
+      .field("title", item.title)
+      .field("location", item.location)
+      .field("description", item.description)
+      .attach("image", image, image.split("/")[-1])
+      .then((res) => resolve(res));
+  });
+};
+
 describe("Equipment", () => {
   beforeEach((done) => {
     User.deleteMany({}, () => {});
@@ -40,18 +54,9 @@ describe("Equipment", () => {
       });
 
       const loginResponse = await loginPromise;
-      const addItemPromise = new Promise((resolve) => {
-        client
-          .post("/equipment/item")
-          .set("Authorization", `Bearer ${loginResponse.body.token}`)
-          .field("_id", item1._id)
-          .field("title", item1.title)
-          .field("location", item1.location)
-          .field("description", item1.description)
-          .attach("image", image1, image1.split("/")[-1])
-          .then((res) => resolve(res));
-      });
-
+      const { token } = loginResponse.body;
+      const addItemPromise = addItem(item1, image1, token);
+     
       const res = await addItemPromise;
       res.should.have.status(201);
       res.should.be.a("object");
