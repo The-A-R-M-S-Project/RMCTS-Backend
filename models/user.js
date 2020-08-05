@@ -32,7 +32,7 @@ const userSchema = mongoose.Schema({
   contact: {
     type: String,
   },
-  websiteUrl: {
+  websiteURL: {
     type: String,
   },
   bio: {
