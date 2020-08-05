@@ -4,7 +4,7 @@
   "description": "Resource Management, Cataloging and Tracking System Backend",
   "main": "app.js",
   "scripts": {
-    "test": "mocha --timeout 20000 --exit",
+    "test": "mocha --timeout 30000 --exit",
     "start": "node app.js",
     "start:dev": "nodemon server.js"
   },
