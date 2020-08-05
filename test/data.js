@@ -79,10 +79,10 @@ exports.item7={
     _id: "5f2713b129aa8b2e60aa5798"
 
 }
-exports.image1 = "./images/image1.jpg";
-exports.image2 = "./images/image2.jpg";
-exports.image3 = "./images/image3.jpg";
-exports.image4 = "./images/image4.jpg";
-exports.image5 = "./images/image5.jpg";
-exports.image6 = "./images/image6.jpg";
-exports.image7 = "./images/image7.jpg";
+exports.image1 = "./test/images/image1.jpg";
+exports.image2 = "./test/images/image2.jpg";
+exports.image3 = "./test/images/image3.jpg";
+exports.image4 = "./test/images/image4.jpg";
+exports.image5 = "./test/images/image5.jpg";
+exports.image6 = "./test/images/image6.jpg";
+exports.image7 = "./test/images/image7.jpg";

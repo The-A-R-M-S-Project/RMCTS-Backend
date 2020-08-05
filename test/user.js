@@ -6,7 +6,7 @@ const server = require("../server");
 const data = require("./data");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const { createUser } = require("../scripts/createuser")
+const { createUser } = require("../utils/createuser")
 
 chai.use(chaiHttp);
 const client = chai.request.agent(server);
