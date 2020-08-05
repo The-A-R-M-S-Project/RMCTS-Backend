@@ -162,4 +162,29 @@ describe("User", () => {
       res.body.should.have.property("websiteURL").eq(profile.websiteURL);
     });
   });
+
+  describe("GET /users/profile/:id", ()=> {
+    it("Should update user profile", async () => {
+      await createUser(data.verifiedInstitution);
+      const { email, password, username } = data.verifiedInstitution;
+      const loginPromise = new Promise((resolve) => {
+        client
+          .post("/users/login")
+          .send({ email, password })
+          .then((res) => resolve(res));
+      });
+      const loginResponse = await loginPromise;
+      const getProfilePromise = new Promise((resolve) => {
+        client
+          .get(`/users/profile/${loginResponse.body.data.user._id}`)
+          .set("Authorization", `Bearer ${loginResponse.body.token}`)
+          .then((res) => resolve(res));
+      });
+
+      const res = await getProfilePromise;
+      res.should.have.status(200);
+      res.should.be.a("object");
+      res.body.should.have.property("username").eq(username);
+    });
+  });
 });
