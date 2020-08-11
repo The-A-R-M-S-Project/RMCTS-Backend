@@ -1,30 +1,49 @@
 const express = require("express");
 const equipmentControllers = require("../controllers/Equipment");
 const router = express.Router();
-const auth = require("../middlewares/auth");
+const authProtector = require("../auth/authProtector");
+const authControllers = require("../auth/authController");
 const multer = require("../middlewares/multer");
 
+router.use(authProtector());
+
+//============================ for only institutions ======================================
 router.post(
-  "/add-item",
-  auth,
+  "/item",
+  authControllers.restricTo("institution"),
   multer.multerUploads,
   equipmentControllers.addItem
 );
-router.get("/equipment", auth, equipmentControllers.getUserEquipment);
-router.delete("/delete-item/:id", auth, equipmentControllers.deleteItem);
+router.get(
+  "/equipment",
+  authControllers.restricTo("institution"),
+  equipmentControllers.getUserEquipment
+);
+router.delete(
+  "/item/:id",
+  authControllers.restricTo("institution"),
+  equipmentControllers.deleteItem
+);
 router.patch(
-  "/edit-item",
-  auth,
-  multer.multerUploads,
+  "/item",
+  authControllers.restricTo("institution"),
   equipmentControllers.updateItem
 );
-router.get("/catalog-default", equipmentControllers.getCatalogDefault);
-router.post("/search", auth, equipmentControllers.getQueryMatch);
-router.get("/item/:id", equipmentControllers.getItem);
-router.post("/reservation/:id", auth, equipmentControllers.makeReservation);
-router.delete("/reservation", auth, equipmentControllers.deleteReservation);
-router.get("/reservations", auth, equipmentControllers.getReservations);
-router.get("/bookings", auth, equipmentControllers.getBookings);
+router.get(
+  "/bookings",
+  authControllers.restricTo("institution"),
+  equipmentControllers.getBookings
+);
+// ---- TODO ----
 
+
+//========================= for all users ==========================================
+router.get("/catalog", equipmentControllers.getCatalogDefault);
+router.post("/search", equipmentControllers.getQueryMatch);
+router.get("/item/:id", equipmentControllers.getItem);
+router.post("/reservation/:id", equipmentControllers.makeReservation);
+router.delete("/reservation", equipmentControllers.deleteReservation);
+router.get("/reservations", equipmentControllers.getReservations);
+router.patch("/image", equipmentControllers.updateItemImage)
 
 module.exports = router;

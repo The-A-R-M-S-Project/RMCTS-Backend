@@ -1,4 +1,4 @@
-const Admin = require("../models/admin");
+const User = require("../models/user");
 const Item = require("../models/item");
 const multer = require("../middlewares/multer");
 const cloudinary = require("../config/cloudinaryConfig");
@@ -11,7 +11,7 @@ exports.addItem = async (req, res) => {
     itm.imageURL = result.secure_url;
     itm.imageID = result.public_id;
     const item = new Item(itm);
-    item.userId = await req.admin._id;
+    item.userId = await req.user._id;
     await item.save();
     res.status(201).send(item);
   } catch (error) {
@@ -21,7 +21,7 @@ exports.addItem = async (req, res) => {
 exports.getItem = async (req, res) => {
   try {
     const item = await Item.findOne({ _id: req.params.id });
-    const owner = await Admin.findOne({ _id: item.userId });
+    const owner = await User.findOne({ _id: item.userId });
     res.status(200).send([
       item,
       {
@@ -37,7 +37,7 @@ exports.getItem = async (req, res) => {
 };
 exports.getUserEquipment = async (req, res) => {
   try {
-    const equipment = await Item.find({ userId: req.admin._id });
+    const equipment = await Item.find({ userId: req.user._id });
     res.json(equipment);
   } catch (error) {
     res.status(400).send(error);
@@ -55,7 +55,7 @@ exports.updateItem = async (req, res) => {
       item.title = req.body.title;
       item.location = req.body.location;
       item.description = req.body.description;
-      item.userId = await req.admin._id;
+      item.userId = await req.user._id;
       await item.save();
       res.status(200).json(item);
     }
@@ -80,31 +80,32 @@ exports.deleteItem = async (req, res) => {
 };
 
 exports.getQueryMatch = async (req, res) => {
-  Item.search(req.body.search, function (err, data) {
-    // console.log(data);
-    // console.log(req.body.search)
-    if (err) {
-      res.send(err);
-    } else {
-      res.status(200).send(data);
+  try {
+    if (req.body.search === "") {
+      const data = await Item.find().sort({ createdAt: -1 }).limit(6);
+      if (!data)
+        return res.status(400).json({ msg: "Query was not successful" });
+      return res.status(200).send(data);
     }
-  });
+    Item.search(req.body.search, function (err, data) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.status(200).send(data);
+      }
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 };
 
 exports.getCatalogDefault = async (req, res) => {
   try {
-    Item.find()
-      .sort({ createdAt: -1 })
-      .limit(6)
-      .exec(function (error, data) {
-        if (error) {
-          res.status(400).send(error);
-        } else {
-          res.status(200).send(data);
-        }
-      });
+    const data = await Item.find().sort({ createdAt: -1 }).limit(6);
+    if (!data) return res.status(400).json({ msg: "Query was not successful" });
+    return res.status(200).send(data);
   } catch (error) {
-    res.send(error);
+    return res.send(error);
   }
 };
 
@@ -114,7 +115,7 @@ exports.makeReservation = async (req, res) => {
     const reservation = req.body;
     reservation.itemId = id;
 
-    reservation.reserverId = await req.admin._id.toString();
+    reservation.reserverId = await req.user._id.toString();
     const item = await Item.findById(id);
 
     // checking if dates are already occupied
@@ -154,7 +155,7 @@ exports.makeReservation = async (req, res) => {
 
 exports.getReservations = async (req, res) => {
   try {
-    const items = await Item.find({ "reservations.reserverId": req.admin._id });
+    const items = await Item.find({ "reservations.reserverId": req.user._id });
     // console.log(items)
     reservations = [];
     for (i of items) {
@@ -169,7 +170,7 @@ exports.getReservations = async (req, res) => {
 
 exports.getBookings = async (req, res) => {
   try {
-    const items = await Item.find({ userId: req.admin._id });
+    const items = await Item.find({ userId: req.user._id });
     reservations = [];
     for (i of items) {
       reservations.push(...i.reservations);
@@ -202,3 +203,22 @@ exports.deleteReservation = async (req, res) => {
     res.send(error);
   }
 };
+
+exports.updateItemImage = async (req, res) => {
+  try {
+    const file = await multer.dataURI(req).content;
+
+    const result = await cloudinary.uploader.upload(file);
+
+    const item = await Item.findById(req.params.id);
+    if(!item) return res.status(400).send("Item was not found");
+
+    item.ImageURL = result.secure_url;
+    item.ImageID = result.public_id;
+
+    await item.save();
+    res.status(200).json({ msg: "Profile image successfully updated" , item});
+  } catch (err) {
+    res.status(500).send(err);
+  }
+}
