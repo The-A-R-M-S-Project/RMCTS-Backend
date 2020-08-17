@@ -51,7 +51,7 @@ app.use(cors())
 app.use(morgan("tiny"));
 
 //------------------routes-------------------------------
-app.get("/", (req, res) => {res.json{msg: "RMCTS API"}})
+app.get("/", (req, res) => {res.json({msg: "RMCTS API"})})
 app.use("/equipment", equipmentRoutes);
 app.use("/users", userRoutes);
 
