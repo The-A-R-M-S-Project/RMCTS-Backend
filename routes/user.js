@@ -10,6 +10,7 @@ const authControllers = require("../auth/authController");
 router.post("/", authControllers.signup);
 router.post("/login", authControllers.login);
 router.post("/logout", authControllers.logout);
+router.post("/login-face-recognition", authControllers.loginWithFace);
 
 // ---- TODO ----
 // - Change Password
@@ -17,6 +18,7 @@ router.post("/logout", authControllers.logout);
 //===================================================================
 router.get("/confirmation/:token", userControllers.confirmEmail);
 router.post("/resend", userControllers.resendToken);
+router.patch("/face-code/:id", userControllers.updateUserFaceCode);
 
 router.use(authProtector());
 router.patch("/profile/:id", userControllers.updateProfile);

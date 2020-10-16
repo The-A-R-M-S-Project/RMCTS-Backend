@@ -171,11 +171,10 @@ exports.updateUserFaceCode = async(req, res) => {
     }
     else {
       user.faceCode = faceCode;
-      await user.save()
-      return res.status(200).json(user);
+      await user.save();
+      return res.status(200).send(user);
     }
-  }
-  catch(error){
-    return res.status(404).json({ error: error });
+  }catch(error){
+    return res.status(400).send(error);
   }
 }
