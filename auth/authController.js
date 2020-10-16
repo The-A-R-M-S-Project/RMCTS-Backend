@@ -114,8 +114,8 @@ exports.login = async (req, res) => {
 
 exports.loginWithFace = async (req, res) => {
   try {
-    const { email, face_code } = req.body;
-    const user = await User.findByAttributes(email, face_code);
+    const { email, faceCode } = req.body;
+    const user = await User.findByAttributes(email, faceCode);
     if (!user) {
       return res
         .status(401)

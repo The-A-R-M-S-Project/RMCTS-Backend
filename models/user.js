@@ -70,15 +70,13 @@ userSchema.pre("save", async function (next) {
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 8);
   }
+  //Harshing face code
+  if (user.isModified("faceCode")) {
+    user.faceCode = await bcrypt.hash(user.faceCode, 10);
+  }
   next();
 });
-// Hashing faceCode before saving the user model
-userSchema.pre("save", async function (next) {
-  const user = this;
-  if (user.isModified("faceCode")) {
-    user.password = await bcrypt.hash(user.faceCode);
-  }
-})
+
 // Searching for the user by email and password.
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
