@@ -112,6 +112,21 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.loginWithFace = async (req, res) => {
+  try {
+    const { email, face_code } = req.body;
+    const user = await User.findByAttributes(email, face_code);
+    if (!user) {
+      return res
+        .status(401)
+        .send({ error: "Login failed! Check your details." });
+    }
+    sendToken(user, 200, res);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+};
+
 exports.logout = (req, res) => {
   try {
     res.cookie("jwt", "no-auth", {
