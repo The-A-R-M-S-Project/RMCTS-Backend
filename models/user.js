@@ -29,6 +29,9 @@ const userSchema = mongoose.Schema({
     required: true,
     minLength: 7,
   },
+  faceCode: {
+    type: String
+  },
   contact: {
     type: String,
   },
@@ -67,6 +70,10 @@ userSchema.pre("save", async function (next) {
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 8);
   }
+  //Harshing face code
+  if (user.isModified("faceCode")) {
+    user.faceCode = await bcrypt.hash(user.faceCode, 10);
+  }
   next();
 });
 
@@ -82,6 +89,19 @@ userSchema.statics.findByCredentials = async (email, password) => {
   }
   return user;
 };
+
+// Searching for the user by email and face_code
+userSchema.statics.findByAttributes = async (email, faceCode) => {
+  const user = await User.findOne({email});
+  if (!user){
+    throw new Error({ error: "Invalid login credentials"});
+  }
+  const isfaceCodeMatch = await bcrypt.compare(faceCode, user.faceCode)
+  if(!isfaceCodeMatch){
+    throw new Error({error: "Face doesn't match the account owner's!"})
+  }
+  return user;
+}
 
 const User = mongoose.model("user", userSchema);
 

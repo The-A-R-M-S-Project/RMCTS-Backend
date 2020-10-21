@@ -14,8 +14,6 @@ const userRoutes = require("./routes/user");
 // const connectMongo = require('./utils/database').connectMongo;
 require("dotenv").config();
 
-const port = process.env.PORT || 3000;
-
 const app = express();
 
 //--------------- protection from attacks ----------------

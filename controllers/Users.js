@@ -158,3 +158,23 @@ exports.getProfile = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
+exports.updateUserFaceCode = async(req, res) => {
+  try{
+    const faceCode = req.body.faceCode
+    const id = req.params.id
+    const user = await User.findById(id)
+    if (!user) {
+      return res
+        .status(responseDueToNotFound().status)
+        .json(responseDueToNotFound().message);
+    }
+    else {
+      user.faceCode = faceCode;
+      await user.save();
+      return res.status(200).send(user);
+    }
+  }catch(error){
+    return res.status(400).send(error);
+  }
+}
