@@ -159,7 +159,7 @@ describe("User", () => {
   });
 
   describe("GET /users/profile/:id", ()=> {
-    it("Should update user profile", async () => {
+    it("Should retrieve user profile", async () => {
       await createUser(data.verifiedInstitution);
       const { email, password, username } = data.verifiedInstitution;
       const loginPromise = new Promise((resolve) => {
