@@ -155,13 +155,24 @@ exports.makeReservation = async (req, res) => {
 
 exports.getReservations = async (req, res) => {
   try {
-    const items = await Item.find({ "reservations.reserverId": req.user._id });
-    console.log(items)
+    const items = await Item.find({ userId: req.user._id  });
+    // console.log(items)
+    console.log("Account id", req.user._id)
     reservations = [];
     for (i of items) {
       reservations.push(...i.reservations);
     }
-
+    //filters out reservations belonging to current account
+    reservations = reservations.filter(x => {
+      return String(x.reserverId) == String(req.user._id)
+    })
+    // filters out passed reservations
+    reservations = reservations.filter(x => {
+      const date = new Date()
+      const end = new Date(x.end)
+      return end >= date
+    })
+    console.log("Filtered ", reservations)
     res.status(200).send(reservations);
   } catch (error) {
     res.status(404).send(error);
@@ -175,6 +186,12 @@ exports.getBookings = async (req, res) => {
     for (i of items) {
       reservations.push(...i.reservations);
     }
+    // filters out passed reservations
+    reservations = reservations.filter(x => {
+      const date = new Date()
+      const end = new Date(x.end)
+      return end >= date
+    })
     res.status(200).send(reservations);
   } catch (error) {
     res.status(404).send(error);
