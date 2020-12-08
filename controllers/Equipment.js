@@ -155,7 +155,7 @@ exports.makeReservation = async (req, res) => {
 
 exports.getReservations = async (req, res) => {
   try {
-    const items = await Item.find({ userId: req.user._id  });
+    const items = await Item.find({ "reservations.reserverId": req.user._id  });
     // console.log(items)
     console.log("Account id", req.user._id)
     reservations = [];
